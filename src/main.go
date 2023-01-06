@@ -7,10 +7,7 @@ import (
 
 func main() {
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		switch r.Method {
-		case "POST":
-
-		}
+		w.Write([]byte("Hello, world!"))
 	})
 	if err := http.ListenAndServe(":3000", nil); err != nil {
 		log.Fatal(err)
