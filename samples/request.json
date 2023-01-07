@@ -1,0 +1,5 @@
+{
+    "sampleSize":100000000,
+    "maxSampleIterations":1000,
+    "maxIterations":1000
+}
