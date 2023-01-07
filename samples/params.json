@@ -13,5 +13,7 @@
         "sampleSize":100000002,
         "maxSampleIterations":1002,
         "maxIterations":1002
-    }
+    },
+    "width":2000,
+    "height":2000
 }

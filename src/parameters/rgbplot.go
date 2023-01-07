@@ -5,4 +5,6 @@ type RgbPlot struct {
 	Red,
 	Green,
 	Blue Channel
+	Width,
+	Height uint32
 }
