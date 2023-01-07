@@ -14,12 +14,12 @@ func main() {
 		case "POST":
 			d := json.NewDecoder(r.Body)
 			d.DisallowUnknownFields()
-			var channel parameters.Channel
-			if err := d.Decode(&channel); err != nil {
+			var plot parameters.RgbPlot
+			if err := d.Decode(&plot); err != nil {
 				log.Fatal(err)
 			}
 
-			b, err := json.Marshal(channel)
+			b, err := json.Marshal(plot)
 			if err != nil {
 				log.Fatal(err)
 			}
