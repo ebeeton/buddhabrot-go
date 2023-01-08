@@ -54,9 +54,14 @@ func linearScale(val, minScaleFrom, maxScaleFrom, minScaleTo, maxScaleTo float64
 	return (val-minScaleFrom)/(maxScaleFrom-minScaleFrom)*(maxScaleTo-minScaleTo) + minScaleTo
 }
 
-func randomPointOnComplexPlane() complex128 {
-	// Generate r and imaginary values from -2 to 2.
-	r := rand.Float64()*bailoutTimesTwo - bailout
-	i := rand.Float64()*bailoutTimesTwo - bailout
-	return complex(r, i)
+func randomPointNotInMandelbrotSet(maxIterations int) complex128 {
+	for {
+		// Generate r and imaginary values from -2 to 2.
+		r := rand.Float64()*bailoutTimesTwo - bailout
+		i := rand.Float64()*bailoutTimesTwo - bailout
+		p := complex(r, i)
+		if !isInMandelbrotSet(p, maxIterations) {
+			return p
+		}
+	}
 }

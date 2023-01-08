@@ -86,7 +86,7 @@ func TestIsInMandelbrotSet(t *testing.T) {
 }
 
 func TestRandomPointOnComplexPlane(t *testing.T) {
-	point := randomPointOnComplexPlane()
+	point := randomPointNotInMandelbrotSet(100)
 	if real(point) > complexPlaneMax || real(point) < complexPlaneMin {
 		t.Errorf("Got real %f, want between %f and %f.", real(point),
 			complexPlaneMin, complexPlaneMax)
