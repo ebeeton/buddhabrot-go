@@ -8,5 +8,5 @@ type RgbPlot struct {
 	Green,
 	Blue Channel
 	Width,
-	Height uint32
+	Height int
 }

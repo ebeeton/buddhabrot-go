@@ -38,16 +38,16 @@ func plotChannel(c parameters.Channel) {
 
 }
 
-func isInMandelbrotSet(c complex128, maxIterations int) (bool, int) {
+func isInMandelbrotSet(c complex128, maxIterations int) bool {
 	z := c
 	for i := 0; i < maxIterations; i++ {
 		if math.Abs(real(z)) > bailout || math.Abs(imag(z)) > bailout {
-			return false, i
+			return false
 		}
 		z = z*z + c
 	}
 
-	return true, maxIterations
+	return true
 }
 
 func linearScale(val, minScaleFrom, maxScaleFrom, minScaleTo, maxScaleTo float64) float64 {

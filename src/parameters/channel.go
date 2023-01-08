@@ -9,5 +9,5 @@ package parameters
 type Channel struct {
 	SampleSize,
 	MaxSampleIterations,
-	MaxIterations uint64
+	MaxIterations int
 }

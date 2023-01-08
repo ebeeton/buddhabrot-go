@@ -68,21 +68,18 @@ func TestIsInMandelbrotSet(t *testing.T) {
 		c             complex128
 		maxIterations int
 		isInSet       bool
-		iterations    int
 	}{
-		{complex(0, 0), 100, true, 100},
-		{complex(1, 1), 100, false, 1},
+		{complex(0, 0), 100, true},
+		{complex(1, 1), 100, false},
 	}
 
 	for _, tt := range tests {
-		testname := fmt.Sprintf("%v,%d,%t,%d", tt.c, tt.maxIterations, tt.isInSet, tt.iterations)
+		testname := fmt.Sprintf("%v,%d,%t", tt.c, tt.maxIterations, tt.isInSet)
 		t.Run(testname, func(t *testing.T) {
-			isInSet, iterations := isInMandelbrotSet(tt.c, tt.maxIterations)
+			isInSet := isInMandelbrotSet(tt.c, tt.maxIterations)
 
 			if isInSet != tt.isInSet {
 				t.Errorf("Got %t, want %t", isInSet, tt.isInSet)
-			} else if iterations != tt.iterations {
-				t.Errorf("Got %d, want %d", iterations, tt.iterations)
 			}
 		})
 	}
