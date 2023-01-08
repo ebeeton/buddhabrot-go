@@ -3,12 +3,14 @@ package buddhabrot
 
 import (
 	"math"
+	"math/rand"
 
 	"github.com/ebeeton/buddhalbrot-go/parameters"
 )
 
 const (
 	bailout         float64 = 2
+	bailoutTimesTwo float64 = bailout * 2
 	channels                = 3
 	complexPlaneMin float64 = -2
 	complexPlaneMax float64 = 2
@@ -48,5 +50,8 @@ func linearScale(val, minScaleFrom, maxScaleFrom, minScaleTo, maxScaleTo float64
 }
 
 func randomPointOnComplexPlane() complex128 {
-	return complex128(0)
+	// Generate r and imaginary values from -2 to 2.
+	r := rand.Float64()*bailoutTimesTwo - bailout
+	i := rand.Float64()*bailoutTimesTwo - bailout
+	return complex(r, i)
 }
