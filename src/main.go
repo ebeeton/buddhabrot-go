@@ -3,12 +3,15 @@ package main
 import (
 	"encoding/json"
 	"log"
+	"math/rand"
 	"net/http"
+	"time"
 
 	"github.com/ebeeton/buddhalbrot-go/parameters"
 )
 
 func main() {
+	rand.Seed(time.Now().UnixMicro())
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		switch r.Method {
 		case "POST":

@@ -33,10 +33,10 @@ func TestPlot(t *testing.T) {
 	result := Plot(plot)
 
 	if len(result) != Channels {
-		t.Errorf("Expected %d channels, got %d.", Channels, len(result))
+		t.Errorf("Got %d channels, want %d.", len(result), Channels)
 	} else if len(result[0]) != int(plot.Width)*int(plot.Height) {
-		t.Errorf("Expected channel length %d, got %d",
-			int(plot.Width)*int(plot.Height), len(result[0]))
+		t.Errorf("Got channel length %d, want %d",
+			len(result[0]), int(plot.Width)*int(plot.Height))
 	}
 }
 
@@ -85,5 +85,16 @@ func TestIsInMandelbrotSet(t *testing.T) {
 				t.Errorf("Got %d, want %d", iterations, tt.iterations)
 			}
 		})
+	}
+}
+
+func TestRandomPointOnComplexPlane(t *testing.T) {
+	point := randomPointOnComplexPlane()
+	if real(point) > ComplexPlaneMax || real(point) < ComplexPlaneMin {
+		t.Errorf("Got real %f, want between %f and %f.", real(point),
+			ComplexPlaneMin, ComplexPlaneMax)
+	} else if imag(point) > ComplexPlaneMax || imag(point) < ComplexPlaneMin {
+		t.Errorf("Got imaginary %f, want between %f and %f.", imag(point),
+			ComplexPlaneMin, ComplexPlaneMax)
 	}
 }
