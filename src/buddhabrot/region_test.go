@@ -3,6 +3,7 @@ package buddhabrot
 
 import (
 	"fmt"
+	"math"
 	"testing"
 )
 
@@ -25,5 +26,22 @@ func TestPointInRegion(t *testing.T) {
 				t.Errorf("Got %t, want %t.", got, tt.want)
 			}
 		})
+	}
+}
+
+func TestMatchAspectRatio(t *testing.T) {
+	const (
+		wantMinImag float64 = -0.92625
+		wantMaxImag float64 = 0.92625
+		delta               = 1e-10
+	)
+	r := region{-2.0, 0.47, -1.12, 1.12}
+
+	r.matchAspectRatio(1024, 768)
+
+	if math.Abs(wantMinImag-r.minImag) > delta {
+		t.Errorf("Got %f, want %f.", r.minImag, wantMinImag)
+	} else if math.Abs(wantMaxImag-r.maxImag) > delta {
+		t.Errorf("Got %f, want %f.", r.maxImag, wantMaxImag)
 	}
 }

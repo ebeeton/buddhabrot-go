@@ -16,3 +16,12 @@ func (r region) pointInRegion(c complex128) bool {
 		imag(c) >= r.minImag &&
 		imag(c) <= r.maxImag
 }
+
+func (r *region) matchAspectRatio(width, height int) {
+	complexWidth := r.maxReal - r.minReal
+	aspectRatio := float64(height) / float64(width)
+	newComplexHeight := complexWidth * aspectRatio
+	var halfComplexHeightDelta = (newComplexHeight - (r.maxImag - r.minImag)) / 2.0
+	r.minImag -= halfComplexHeightDelta
+	r.maxImag += halfComplexHeightDelta
+}
