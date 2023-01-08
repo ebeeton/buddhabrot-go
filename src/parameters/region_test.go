@@ -1,5 +1,5 @@
-// Package Buddhabrot plots images.
-package buddhabrot
+// Package parameters defines parameters used to plot Buddhabrot images.
+package parameters
 
 import (
 	"fmt"
@@ -9,12 +9,12 @@ import (
 
 func TestPointInRegion(t *testing.T) {
 	var tests = []struct {
-		r    region
+		r    Region
 		c    complex128
 		want bool
 	}{
-		{region{-2, 2, -2, 2}, complex(1, 1), true},
-		{region{-2, 2, -2, 2}, complex(2.1, 1), false},
+		{Region{-2, 2, -2, 2}, complex(1, 1), true},
+		{Region{-2, 2, -2, 2}, complex(2.1, 1), false},
 	}
 
 	for _, tt := range tests {
@@ -35,13 +35,13 @@ func TestMatchAspectRatio(t *testing.T) {
 		wantMaxImag float64 = 0.92625
 		delta               = 1e-10
 	)
-	r := region{-2.0, 0.47, -1.12, 1.12}
+	r := Region{-2.0, 0.47, -1.12, 1.12}
 
 	r.matchAspectRatio(1024, 768)
 
-	if math.Abs(wantMinImag-r.minImag) > delta {
-		t.Errorf("Got %f, want %f.", r.minImag, wantMinImag)
-	} else if math.Abs(wantMaxImag-r.maxImag) > delta {
-		t.Errorf("Got %f, want %f.", r.maxImag, wantMaxImag)
+	if math.Abs(wantMinImag-r.MinImag) > delta {
+		t.Errorf("Got %f, want %f.", r.MinImag, wantMinImag)
+	} else if math.Abs(wantMaxImag-r.MaxImag) > delta {
+		t.Errorf("Got %f, want %f.", r.MaxImag, wantMaxImag)
 	}
 }
