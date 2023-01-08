@@ -16,6 +16,11 @@ const (
 	complexPlaneMax float64 = 2
 )
 
+// Plot plots points not in the Mandelbrot set as they escape to infinity. It
+// increments a counter for each point on the plane every time an orbit passes
+// through it. The counter is returned as a slice of three channels
+// corresponding to red, green, and blue in an RGB image. Each channel is a
+// slice of uint32 the length of the image width times height.
 func Plot(plot parameters.RgbPlot) [][]uint32 {
 	counter := make([][]uint32, channels)
 	for i := range counter {
