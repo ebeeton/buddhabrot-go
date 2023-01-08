@@ -10,14 +10,17 @@ type Region struct {
 	MaxImag float64
 }
 
-func (r Region) pointInRegion(c complex128) bool {
+// PointInRegion returns true if a given complex number is within the region.
+func (r Region) PointInRegion(c complex128) bool {
 	return real(c) >= r.MinReal &&
 		real(c) <= r.MaxReal &&
 		imag(c) >= r.MinImag &&
 		imag(c) <= r.MaxImag
 }
 
-func (r *Region) matchAspectRatio(width, height int) {
+// MatchAspectRatio adjusts the imaginary range of the region to match the
+// aspect ratio of the image being plotted.
+func (r *Region) MatchAspectRatio(width, height int) {
 	complexWidth := r.MaxReal - r.MinReal
 	aspectRatio := float64(height) / float64(width)
 	newComplexHeight := complexWidth * aspectRatio

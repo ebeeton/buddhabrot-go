@@ -20,7 +20,7 @@ func TestPointInRegion(t *testing.T) {
 	for _, tt := range tests {
 		testname := fmt.Sprintf("%v,%v,%t", tt.r, tt.c, tt.want)
 		t.Run(testname, func(t *testing.T) {
-			got := tt.r.pointInRegion(tt.c)
+			got := tt.r.PointInRegion(tt.c)
 
 			if got != tt.want {
 				t.Errorf("Got %t, want %t.", got, tt.want)
@@ -37,7 +37,7 @@ func TestMatchAspectRatio(t *testing.T) {
 	)
 	r := Region{-2.0, 0.47, -1.12, 1.12}
 
-	r.matchAspectRatio(1024, 768)
+	r.MatchAspectRatio(1024, 768)
 
 	if math.Abs(wantMinImag-r.MinImag) > delta {
 		t.Errorf("Got %f, want %f.", r.MinImag, wantMinImag)
