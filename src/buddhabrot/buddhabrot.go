@@ -8,13 +8,14 @@ import (
 )
 
 const (
-	Channels                = 3
-	ComplexPlaneMin float64 = -2
-	ComplexPlaneMax float64 = 2
+	bailout         float64 = 2
+	channels                = 3
+	complexPlaneMin float64 = -2
+	complexPlaneMax float64 = 2
 )
 
 func Plot(plot parameters.RgbPlot) [][]uint32 {
-	counter := make([][]uint32, Channels)
+	counter := make([][]uint32, channels)
 	for i := range counter {
 		counter[i] = make([]uint32, plot.Height*plot.Width)
 	}
@@ -31,7 +32,6 @@ func plotChannel(c parameters.Channel) {
 }
 
 func isInMandelbrotSet(c complex128, maxIterations int) (bool, int) {
-	const bailout float64 = 2
 	z := c
 	for i := 0; i < maxIterations; i++ {
 		if math.Abs(real(z)) > bailout || math.Abs(imag(z)) > bailout {
