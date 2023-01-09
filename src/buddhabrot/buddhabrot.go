@@ -2,8 +2,10 @@
 package buddhabrot
 
 import (
+	"log"
 	"math"
 	"math/rand"
+	"sync/atomic"
 
 	"github.com/ebeeton/buddhalbrot-go/parameters"
 )
@@ -27,15 +29,35 @@ func Plot(plot parameters.RgbPlot) [][]uint32 {
 		counter[i] = make([]uint32, plot.Height*plot.Width)
 	}
 
-	plotChannel(plot.Red)
-	plotChannel(plot.Green)
-	plotChannel(plot.Blue)
+	plotChannel(parameters.Red, counter[parameters.Red], plot)
+	plotChannel(parameters.Green, counter[parameters.Green], plot)
+	plotChannel(parameters.Blue, counter[parameters.Blue], plot)
 
 	return counter
 }
 
-func plotChannel(c parameters.Channel) {
+func plotChannel(channelIndex int, counter []uint32, plot parameters.RgbPlot) {
+	channel, err := plot.GetChannel(channelIndex)
+	if err != nil {
+		log.Printf("cannot plot channel %d", channelIndex)
+		return
+	}
 
+	for i := 0; i < channel.SampleSize; i++ {
+		point := randomPointNotInMandelbrotSet(channel.MaxSampleIterations)
+		orbits := plotOrbits(point, channel.MaxIterations, plot.Region)
+
+		for _, v := range orbits {
+			// Convert from complex to image space.
+			pX := int(linearScale(real(v), plot.Region.MinReal, plot.Region.MaxReal, 0, float64(plot.Width)))
+			pY := int(linearScale(imag(v), plot.Region.MinImag, plot.Region.MaxImag, 0, float64(plot.Height)))
+			index := pY*plot.Width + pX
+
+			// The same counter could be incremented when run concurrently,
+			// so increment as an atomic operation.
+			atomic.AddUint32(&counter[index], 1)
+		}
+	}
 }
 
 func isInMandelbrotSet(c complex128, maxIterations int) bool {
@@ -64,4 +86,19 @@ func randomPointNotInMandelbrotSet(maxIterations int) complex128 {
 			return p
 		}
 	}
+}
+
+func plotOrbits(c complex128, maxIterations int, r parameters.Region) []complex128 {
+	var orbits []complex128
+	z := c
+	for i := 0; i < maxIterations; i++ {
+		if math.Abs(real(z)) > bailout || math.Abs(imag(z)) > bailout {
+			// Point has escaped to infinity.
+			return orbits
+		} else if r.PointInRegion(z) {
+			// Only save orbits within the plot region.
+			orbits = append(orbits, z)
+		}
+	}
+	return orbits
 }

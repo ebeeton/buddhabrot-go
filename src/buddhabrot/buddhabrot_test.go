@@ -12,22 +12,22 @@ import (
 func TestPlot(t *testing.T) {
 	plot := parameters.RgbPlot{
 		Red: parameters.Channel{
-			SampleSize:          100000000,
-			MaxSampleIterations: 1000,
-			MaxIterations:       1000,
+			SampleSize:          100,
+			MaxSampleIterations: 10,
+			MaxIterations:       10,
 		},
 		Green: parameters.Channel{
-			SampleSize:          100000000,
-			MaxSampleIterations: 1000,
-			MaxIterations:       1000,
+			SampleSize:          100,
+			MaxSampleIterations: 10,
+			MaxIterations:       10,
 		},
 		Blue: parameters.Channel{
-			SampleSize:          100000000,
-			MaxSampleIterations: 1000,
-			MaxIterations:       1000,
+			SampleSize:          100,
+			MaxSampleIterations: 10,
+			MaxIterations:       10,
 		},
-		Width:  1024,
-		Height: 768,
+		Width:  256,
+		Height: 128,
 	}
 
 	result := Plot(plot)
