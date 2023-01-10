@@ -95,3 +95,28 @@ func TestRandomPointOnComplexPlane(t *testing.T) {
 			complexPlaneMin, complexPlaneMax)
 	}
 }
+
+func TestPlotOrbits(t *testing.T) {
+	c := complex(0.42, 0.42)
+	r := parameters.Region{MinReal: -2, MaxReal: 2, MinImag: -2, MaxImag: 2}
+
+	got := plotOrbits(c, 10, r)
+
+	want := []complex128{(0.42 + 0.42i),
+		(0.42 + 0.7727999999999999i),
+		(-0.0008198399999999606 + 1.0691519999999999i),
+		(-0.7230853269663742 + 0.41824693284864006i),
+		(0.7679218932367734 + -0.18485644038308408i),
+		(0.9755321305612457 + 0.13608938464802267i),
+		(1.3531426171434857 + 0.6855191347049088i)}
+
+	if len(got) != len(want) {
+		t.Errorf("Got %d orbits, want %d.", len(got), len(want))
+	}
+
+	for i, v := range want {
+		if got[i] != v {
+			t.Errorf("Index %d got %v, want %v.", i, got[i], v)
+		}
+	}
+}

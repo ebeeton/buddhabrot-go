@@ -99,6 +99,7 @@ func plotOrbits(c complex128, maxIterations int, r parameters.Region) []complex1
 			// Only save orbits within the plot region.
 			orbits = append(orbits, z)
 		}
+		z = z*z + c
 	}
 	return orbits
 }
