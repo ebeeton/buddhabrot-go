@@ -3,6 +3,7 @@ package buddhabrot
 
 import (
 	"image"
+	"log"
 	"math"
 	"math/rand"
 	"sync/atomic"
@@ -26,23 +27,27 @@ const (
 func Plot(plot parameters.RgbPlot) (*image.RGBA, error) {
 
 	counter := make([][]uint32, channels)
+	var channelMax [channels]uint32
 	for i := range counter {
 		counter[i] = make([]uint32, plot.Height*plot.Width)
-		if err := plotChannel(i, counter[i], plot); err != nil {
+		max, err := plotChannel(i, counter[i], plot)
+		if err != nil {
 			return nil, err
 		}
+		channelMax[i] = max
 	}
-
+	log.Println("Highest count per channel:", channelMax)
 	img := image.NewRGBA(image.Rect(0, 0, plot.Width, plot.Height))
 	return img, nil
 }
 
-func plotChannel(channelIndex int, counter []uint32, plot parameters.RgbPlot) error {
+func plotChannel(channelIndex int, counter []uint32, plot parameters.RgbPlot) (uint32, error) {
 	channel, err := plot.GetChannel(channelIndex)
 	if err != nil {
-		return err
+		return 0, err
 	}
 
+	max := uint32(0)
 	for i := 0; i < channel.SampleSize; i++ {
 		point := randomPointNotInMandelbrotSet(channel.MaxSampleIterations)
 		orbits := plotOrbits(point, channel.MaxIterations, plot.Region)
@@ -55,11 +60,13 @@ func plotChannel(channelIndex int, counter []uint32, plot parameters.RgbPlot) er
 
 			// The same counter could be incremented when run concurrently,
 			// so increment as an atomic operation.
-			atomic.AddUint32(&counter[index], 1)
+			if val := atomic.AddUint32(&counter[index], 1); val > max {
+				max = val
+			}
 		}
 	}
 
-	return nil
+	return max, nil
 }
 
 func isInMandelbrotSet(c complex128, maxIterations int) bool {

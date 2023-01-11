@@ -25,15 +25,15 @@ func main() {
 			d.DisallowUnknownFields()
 			var plot parameters.RgbPlot
 			if err := d.Decode(&plot); err != nil {
-				log.Println("Decode failed: ", err)
+				log.Println("Decode failed:", err)
 				w.WriteHeader(http.StatusInternalServerError)
 				return
 			} else if img, err := buddhabrot.Plot(plot); err != nil {
-				log.Println("Plot failed: ", err)
+				log.Println("Plot failed:", err)
 				w.WriteHeader(http.StatusInternalServerError)
 				return
 			} else if err := writeImage(w, img); err != nil {
-				log.Println("WriteImage failed: ", err)
+				log.Println("WriteImage failed:", err)
 				w.WriteHeader(http.StatusInternalServerError)
 				return
 			}
