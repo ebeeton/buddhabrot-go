@@ -3,6 +3,7 @@ package buddhabrot
 
 import (
 	"image"
+	"image/color"
 	"log"
 	"math"
 	"math/rand"
@@ -37,7 +38,22 @@ func Plot(plot parameters.RgbPlot) (*image.RGBA, error) {
 		channelMax[i] = max
 	}
 	log.Println("Highest count per channel:", channelMax)
+
+	// Assign each pixel color channel a value based on how many times an orbit
+	// "passed through" it.
 	img := image.NewRGBA(image.Rect(0, 0, plot.Width, plot.Height))
+	pixelStride := img.Stride >> 2
+	for y := 0; y < plot.Height; y++ {
+		for x := 0; x < plot.Width; x++ {
+			idx := pixelStride*y + x
+			img.SetRGBA(x, y, color.RGBA{
+				R: uint8(float64(counter[parameters.Red][idx]) / float64(channelMax[parameters.Red]) * math.MaxUint8),
+				G: uint8(float64(counter[parameters.Green][idx]) / float64(channelMax[parameters.Green]) * math.MaxUint8),
+				B: uint8(float64(counter[parameters.Blue][idx]) / float64(channelMax[parameters.Blue]) * math.MaxUint8),
+				A: math.MaxUint8,
+			})
+		}
+	}
 	return img, nil
 }
 
