@@ -7,6 +7,7 @@ import (
 	"log"
 	"math"
 	"math/rand"
+	"sync"
 	"sync/atomic"
 
 	"github.com/ebeeton/buddhalbrot-go/parameters"
@@ -64,22 +65,27 @@ func plotChannel(channelIndex int, counter []uint32, plot parameters.RgbPlot) (u
 	}
 
 	max := uint32(0)
+	var wg sync.WaitGroup
 	for i := 0; i < channel.SampleSize; i++ {
-		point := randomPointNotInMandelbrotSet(channel.MaxSampleIterations)
-		orbits := plotOrbits(point, channel.MaxIterations, plot.Region)
+		wg.Add(1)
+		go func() {
+			defer wg.Done()
+			point := randomPointNotInMandelbrotSet(channel.MaxSampleIterations)
+			orbits := plotOrbits(point, channel.MaxIterations, plot.Region)
 
-		for _, v := range orbits {
-			// Convert from complex to image space.
-			pX := int(linearScale(real(v), plot.Region.MinReal, plot.Region.MaxReal, 0, float64(plot.Width)))
-			pY := int(linearScale(imag(v), plot.Region.MinImag, plot.Region.MaxImag, 0, float64(plot.Height)))
-			index := pY*plot.Width + pX
+			for _, v := range orbits {
+				// Convert from complex to image space.
+				pX := int(linearScale(real(v), plot.Region.MinReal, plot.Region.MaxReal, 0, float64(plot.Width)))
+				pY := int(linearScale(imag(v), plot.Region.MinImag, plot.Region.MaxImag, 0, float64(plot.Height)))
+				index := pY*plot.Width + pX
 
-			// The same counter could be incremented when run concurrently,
-			// so increment as an atomic operation.
-			if val := atomic.AddUint32(&counter[index], 1); val > max {
-				max = val
+				// The same counter could be incremented by more than one
+				// goroutine so increment as an atomic operation.
+				if val := atomic.AddUint32(&counter[index], 1); val > max {
+					max = val
+				}
 			}
-		}
+		}()
 	}
 
 	return max, nil
