@@ -30,12 +30,14 @@ func TestPlot(t *testing.T) {
 		Height: 128,
 	}
 
-	got := Plot(plot)
+	got, err := Plot(plot)
 
 	if got.Rect.Dx() != plot.Width {
 		t.Errorf("Got width %d, want %d", got.Rect.Dx(), plot.Width)
 	} else if got.Rect.Dy() != plot.Height {
 		t.Errorf("Got width %d, want %d", got.Rect.Dy(), plot.Height)
+	} else if err != nil {
+		t.Error(err)
 	}
 }
 

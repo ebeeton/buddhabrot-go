@@ -3,7 +3,6 @@ package buddhabrot
 
 import (
 	"image"
-	"log"
 	"math"
 	"math/rand"
 	"sync/atomic"
@@ -24,23 +23,24 @@ const (
 // through it. The counter is returned as a slice of three channels
 // corresponding to red, green, and blue in an RGB image. Each channel is a
 // slice of uint32 the length of the image width times height.
-func Plot(plot parameters.RgbPlot) *image.RGBA {
+func Plot(plot parameters.RgbPlot) (*image.RGBA, error) {
 
 	counter := make([][]uint32, channels)
 	for i := range counter {
 		counter[i] = make([]uint32, plot.Height*plot.Width)
-		plotChannel(i, counter[i], plot)
+		if err := plotChannel(i, counter[i], plot); err != nil {
+			return nil, err
+		}
 	}
 
 	img := image.NewRGBA(image.Rect(0, 0, plot.Width, plot.Height))
-	return img
+	return img, nil
 }
 
-func plotChannel(channelIndex int, counter []uint32, plot parameters.RgbPlot) {
+func plotChannel(channelIndex int, counter []uint32, plot parameters.RgbPlot) error {
 	channel, err := plot.GetChannel(channelIndex)
 	if err != nil {
-		log.Printf("cannot plot channel %d", channelIndex)
-		return
+		return err
 	}
 
 	for i := 0; i < channel.SampleSize; i++ {
@@ -58,6 +58,8 @@ func plotChannel(channelIndex int, counter []uint32, plot parameters.RgbPlot) {
 			atomic.AddUint32(&counter[index], 1)
 		}
 	}
+
+	return nil
 }
 
 func isInMandelbrotSet(c complex128, maxIterations int) bool {

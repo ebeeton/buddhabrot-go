@@ -20,27 +20,32 @@ func main() {
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		switch r.Method {
 		case "POST":
+			log.Println("Processing request.")
 			d := json.NewDecoder(r.Body)
 			d.DisallowUnknownFields()
 			var plot parameters.RgbPlot
 			if err := d.Decode(&plot); err != nil {
-				log.Fatal(err)
+				log.Println("Decode failed: ", err)
+				w.WriteHeader(http.StatusInternalServerError)
+				return
+			} else if img, err := buddhabrot.Plot(plot); err != nil {
+				log.Println("Plot failed: ", err)
+				w.WriteHeader(http.StatusInternalServerError)
+				return
+			} else if err := writeImage(w, img); err != nil {
+				log.Println("WriteImage failed: ", err)
+				w.WriteHeader(http.StatusInternalServerError)
+				return
 			}
-
-			img := buddhabrot.Plot(plot)
-			if err := WriteImage(w, img); err != nil {
-				log.Fatal(err)
-			}
+			log.Println("Request processed.")
 		}
-
 	})
 	if err := http.ListenAndServe(":3000", nil); err != nil {
 		log.Fatal(err)
 	}
 }
 
-// WriteImage writes an image.RGBA to an http.ResponseWriter.
-func WriteImage(w http.ResponseWriter, img *image.RGBA) error {
+func writeImage(w http.ResponseWriter, img *image.RGBA) error {
 	buf := new(bytes.Buffer)
 
 	if err := png.Encode(buf, img); err != nil {
