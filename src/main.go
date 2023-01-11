@@ -1,12 +1,17 @@
 package main
 
 import (
+	"bytes"
 	"encoding/json"
+	"image"
+	"image/png"
 	"log"
 	"math/rand"
 	"net/http"
+	"strconv"
 	"time"
 
+	"github.com/ebeeton/buddhalbrot-go/buddhabrot"
 	"github.com/ebeeton/buddhalbrot-go/parameters"
 )
 
@@ -22,15 +27,31 @@ func main() {
 				log.Fatal(err)
 			}
 
-			b, err := json.Marshal(plot)
-			if err != nil {
+			img := buddhabrot.Plot(plot)
+			if err := WriteImage(w, img); err != nil {
 				log.Fatal(err)
 			}
-			w.Write(b)
 		}
 
 	})
 	if err := http.ListenAndServe(":3000", nil); err != nil {
 		log.Fatal(err)
 	}
+}
+
+// WriteImage writes an image.RGBA to an http.ResponseWriter.
+func WriteImage(w http.ResponseWriter, img *image.RGBA) error {
+	buf := new(bytes.Buffer)
+
+	if err := png.Encode(buf, img); err != nil {
+		return err
+	}
+
+	w.Header().Set("Content-type", "image/png")
+	w.Header().Set("Content-length", strconv.Itoa(buf.Len()))
+	if _, err := w.Write(buf.Bytes()); err != nil {
+		return err
+	}
+
+	return nil
 }

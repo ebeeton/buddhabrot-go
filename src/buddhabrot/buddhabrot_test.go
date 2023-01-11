@@ -30,13 +30,12 @@ func TestPlot(t *testing.T) {
 		Height: 128,
 	}
 
-	result := Plot(plot)
+	got := Plot(plot)
 
-	if len(result) != channels {
-		t.Errorf("Got %d channels, want %d.", len(result), channels)
-	} else if len(result[0]) != int(plot.Width)*int(plot.Height) {
-		t.Errorf("Got channel length %d, want %d",
-			len(result[0]), int(plot.Width)*int(plot.Height))
+	if got.Rect.Dx() != plot.Width {
+		t.Errorf("Got width %d, want %d", got.Rect.Dx(), plot.Width)
+	} else if got.Rect.Dy() != plot.Height {
+		t.Errorf("Got width %d, want %d", got.Rect.Dy(), plot.Height)
 	}
 }
 

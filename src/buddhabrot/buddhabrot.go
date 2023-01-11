@@ -2,6 +2,7 @@
 package buddhabrot
 
 import (
+	"image"
 	"log"
 	"math"
 	"math/rand"
@@ -23,17 +24,16 @@ const (
 // through it. The counter is returned as a slice of three channels
 // corresponding to red, green, and blue in an RGB image. Each channel is a
 // slice of uint32 the length of the image width times height.
-func Plot(plot parameters.RgbPlot) [][]uint32 {
+func Plot(plot parameters.RgbPlot) *image.RGBA {
+
 	counter := make([][]uint32, channels)
 	for i := range counter {
 		counter[i] = make([]uint32, plot.Height*plot.Width)
+		plotChannel(i, counter[i], plot)
 	}
 
-	plotChannel(parameters.Red, counter[parameters.Red], plot)
-	plotChannel(parameters.Green, counter[parameters.Green], plot)
-	plotChannel(parameters.Blue, counter[parameters.Blue], plot)
-
-	return counter
+	img := image.NewRGBA(image.Rect(0, 0, plot.Width, plot.Height))
+	return img
 }
 
 func plotChannel(channelIndex int, counter []uint32, plot parameters.RgbPlot) {
