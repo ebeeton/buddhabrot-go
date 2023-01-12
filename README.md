@@ -2,6 +2,8 @@
 
 A Buddhabrot plotter written as a Go learning exercise.
 
+![Buddhabrot image](/assets/images/sample.png)
+
 # Usage
 
 `go run .` starts an HTTP server on port 3000. The parameters used to plot the
