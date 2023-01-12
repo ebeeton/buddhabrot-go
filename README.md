@@ -1,5 +1,7 @@
 # buddhabrot-go
 
+[![Go](https://github.com/ebeeton/buddhabrot-go/actions/workflows/go.yml/badge.svg)](https://github.com/ebeeton/buddhabrot-go/actions/workflows/go.yml)
+
 A Buddhabrot plotter written as a Go learning exercise.
 
 ![Buddhabrot image](/assets/images/sample.png)
