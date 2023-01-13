@@ -27,7 +27,7 @@ const (
 // corresponding to red, green, and blue in an RGB image. Each channel is a
 // slice of uint32 the length of the image width times height.
 func Plot(plot parameters.RgbPlot) (*image.RGBA, error) {
-
+	log.Println("Plot started.")
 	counter := make([][]uint32, channels)
 	var channelMax [channels]uint32
 	for i := range counter {
@@ -55,6 +55,7 @@ func Plot(plot parameters.RgbPlot) (*image.RGBA, error) {
 			})
 		}
 	}
+	log.Println("Plot complete.")
 	return img, nil
 }
 
@@ -64,6 +65,7 @@ func plotChannel(channelIndex int, counter []uint32, plot parameters.RgbPlot) (u
 		return 0, err
 	}
 
+	log.Printf("Channel %d plot started.", channelIndex)
 	max := uint32(0)
 	var wg sync.WaitGroup
 	for i := 0; i < channel.SampleSize; i++ {
@@ -87,7 +89,7 @@ func plotChannel(channelIndex int, counter []uint32, plot parameters.RgbPlot) (u
 			}
 		}()
 	}
-
+	log.Printf("Channel %d plot complete.", channelIndex)
 	return max, nil
 }
 
