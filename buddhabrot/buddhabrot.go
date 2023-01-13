@@ -11,6 +11,7 @@ import (
 	"sync/atomic"
 
 	"github.com/ebeeton/buddhalbrot-go/parameters"
+	"github.com/ebeeton/buddhalbrot-go/timer"
 )
 
 const (
@@ -27,6 +28,7 @@ const (
 // corresponding to red, green, and blue in an RGB image. Each channel is a
 // slice of uint32 the length of the image width times height.
 func Plot(plot parameters.RgbPlot) (*image.RGBA, error) {
+	defer timer.Timer("Plot")()
 	log.Println("Plot started.")
 	counter := make([][]uint32, channels)
 	var channelMax [channels]uint32
