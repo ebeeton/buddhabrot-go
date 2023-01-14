@@ -15,18 +15,15 @@ image are posted in JSON, and a PNG image is written to the response.
 {
     "red": {
         "sampleSize":500000000,
-        "maxSampleIterations":1000,
-        "maxIterations":100
+        "maxIterations":1000
     },
     "green": {
         "sampleSize":500000000,
-        "maxSampleIterations":1000,
-        "maxIterations":1000
+        "maxIterations":500
     },
     "blue": {
         "sampleSize":500000000,
-        "maxSampleIterations":1000,
-        "maxIterations":1000
+        "maxIterations":50
     },
     "region": {
         "minReal":-2.0,
