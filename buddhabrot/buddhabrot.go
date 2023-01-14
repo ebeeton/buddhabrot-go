@@ -29,7 +29,7 @@ const (
 // slice of uint32 the length of the image width times height.
 func Plot(plot parameters.RgbPlot) (*image.RGBA, error) {
 	defer timer.Timer("Plot")()
-	log.Println("Plot started.")
+	log.Printf("Plot started with params: %+v.", plot)
 	counter := make([][]uint32, channels)
 	var channelMax [channels]uint32
 	for i := range counter {
@@ -74,7 +74,7 @@ func plotChannel(channelIndex int, counter []uint32, plot parameters.RgbPlot) (u
 		wg.Add(1)
 		go func() {
 			defer wg.Done()
-			point := randomPointNotInMandelbrotSet(channel.MaxSampleIterations)
+			point := randomPointNotInMandelbrotSet(channel.MaxIterations)
 			orbits := plotOrbits(point, channel.MaxIterations, plot.Region)
 
 			for _, v := range orbits {

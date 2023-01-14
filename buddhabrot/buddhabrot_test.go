@@ -12,19 +12,16 @@ import (
 func TestPlot(t *testing.T) {
 	plot := parameters.RgbPlot{
 		Red: parameters.Channel{
-			SampleSize:          100,
-			MaxSampleIterations: 10,
-			MaxIterations:       10,
+			SampleSize:    100,
+			MaxIterations: 10,
 		},
 		Green: parameters.Channel{
-			SampleSize:          100,
-			MaxSampleIterations: 10,
-			MaxIterations:       10,
+			SampleSize:    100,
+			MaxIterations: 10,
 		},
 		Blue: parameters.Channel{
-			SampleSize:          100,
-			MaxSampleIterations: 10,
-			MaxIterations:       10,
+			SampleSize:    100,
+			MaxIterations: 10,
 		},
 		Width:  256,
 		Height: 128,
