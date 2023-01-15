@@ -13,18 +13,8 @@ image are posted in JSON, and a PNG image is written to the response.
 
 ```json
 {
-    "red": {
-        "sampleSize":500000000,
-        "maxIterations":1000
-    },
-    "green": {
-        "sampleSize":500000000,
-        "maxIterations":500
-    },
-    "blue": {
-        "sampleSize":500000000,
-        "maxIterations":50
-    },
+    "sampleSize":500000000,
+    "maxIterations":1000,
     "region": {
         "minReal":-2.0,
         "maxReal":2.0,
