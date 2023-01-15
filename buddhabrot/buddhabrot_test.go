@@ -118,3 +118,27 @@ func TestPlotOrbits(t *testing.T) {
 		}
 	}
 }
+
+func TestLerp(t *testing.T) {
+	var tests = []struct {
+		first, second uint8
+		stop          float64
+		want          uint8
+	}{
+		{64, 192, 0.5, 128},
+		{0, 255, 0.25, 63},
+		{0, 255, 0.75, 191},
+		{0, 255, 0, 0},
+		{0, 255, 1.0, 255},
+	}
+
+	for _, tt := range tests {
+		testname := fmt.Sprintf("%d,%d,%f", tt.first, tt.second, tt.stop)
+		t.Run(testname, func(t *testing.T) {
+			got := lerp(tt.first, tt.second, tt.stop)
+			if got != tt.want {
+				t.Errorf("Got %d, want %d.", got, tt.want)
+			}
+		})
+	}
+}
