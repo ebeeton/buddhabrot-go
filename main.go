@@ -23,7 +23,7 @@ func main() {
 			log.Println("Processing request.")
 			d := json.NewDecoder(r.Body)
 			d.DisallowUnknownFields()
-			var plot parameters.RgbPlot
+			var plot parameters.Plot
 			if err := d.Decode(&plot); err != nil {
 				log.Println("Decode failed:", err)
 				w.WriteHeader(http.StatusInternalServerError)
