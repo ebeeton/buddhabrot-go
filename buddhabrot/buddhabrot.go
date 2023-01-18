@@ -20,6 +20,7 @@ const (
 	channels                = 3
 	complexPlaneMin float64 = -2
 	complexPlaneMax float64 = 2
+	paletteColors           = 256
 )
 
 // Plot iteratively plots points not in the Mandelbrot set as they escape to
@@ -56,7 +57,7 @@ func Plot(plot parameters.Plot) (*image.RGBA, error) {
 	log.Println("Highest count:", max)
 
 	// Get the gradient palette used to color pixels based on hit count.
-	g := gradient.GetGradient(plot.Gradient, math.MaxUint8)
+	g := gradient.GetGradient(plot.Gradient, paletteColors)
 
 	// Assign each pixel color channel a value based on how many times an orbit
 	// "passed through" it.
