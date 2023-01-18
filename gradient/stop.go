@@ -6,5 +6,5 @@ package gradient
 // 0 to 1.
 type Stop struct {
 	Color    string
-	Position float32
+	Position float64
 }

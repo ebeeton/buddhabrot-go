@@ -3,13 +3,13 @@ package buddhabrot
 
 import (
 	"image"
-	"image/color"
 	"log"
 	"math"
 	"math/rand"
 	"sync"
 	"sync/atomic"
 
+	"github.com/ebeeton/buddhalbrot-go/gradient"
 	"github.com/ebeeton/buddhalbrot-go/parameters"
 	"github.com/ebeeton/buddhalbrot-go/timer"
 )
@@ -55,20 +55,18 @@ func Plot(plot parameters.Plot) (*image.RGBA, error) {
 	}
 	log.Println("Highest count:", max)
 
+	// Get the gradient palette used to color pixels based on hit count.
+	g := gradient.GetGradient(plot.Gradient, math.MaxUint8)
+
 	// Assign each pixel color channel a value based on how many times an orbit
 	// "passed through" it.
 	img := image.NewRGBA(image.Rect(0, 0, plot.Width, plot.Height))
 	pixelStride := img.Stride >> 2
 	for y := 0; y < plot.Height; y++ {
 		for x := 0; x < plot.Width; x++ {
-			idx := pixelStride*y + x
-			gray := uint8(float64(counter[idx]) / float64(max) * math.MaxUint8)
-			img.SetRGBA(x, y, color.RGBA{
-				R: gray,
-				G: gray,
-				B: gray,
-				A: math.MaxUint8,
-			})
+			cIdx := pixelStride*y + x
+			gIdx := uint8(float64(counter[cIdx]) / float64(max) * math.MaxUint8)
+			img.SetRGBA(x, y, g[gIdx])
 		}
 	}
 	log.Println("Plot complete.")
