@@ -22,7 +22,18 @@ image are posted in JSON, and a PNG image is written to the response.
         "maxImag":2.0
     },
     "width":2000,
-    "height":2000
+    "height":2000,
+    "gradient": [{
+            "color":"#000000",
+            "position":0.0
+        }, {
+            "color":"#00FF00",
+            "position":0.75
+        }, {
+            "color":"#FFFFFF",
+            "position":1.0
+        }
+    ]
 }
 ```
 
