@@ -4,7 +4,7 @@
 
 A Buddhabrot plotter written as a Go learning exercise.
 
-![Buddhabrot image](/assets/images/sample.png)
+![Buddhabrot image](/samples/sample.png)
 
 # Usage
 
