@@ -27,13 +27,15 @@ image are posted in JSON, and a PNG image is written to the response.
             "color":"#000000",
             "position":0.0
         }, {
-            "color":"#00FF00",
+           "color":"#00FF00",
+           "position":0.25
+        }, {
+            "color":"#FFFFFF",
             "position":0.75
         }, {
             "color":"#FFFFFF",
             "position":1.0
-        }
-    ]
+        }]
 }
 ```
 
