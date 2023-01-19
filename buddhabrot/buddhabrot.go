@@ -31,7 +31,6 @@ func Plot(plot parameters.Plot) (*image.RGBA, error) {
 	defer timer.Timer("Plot")()
 	log.Printf("Plot started with params: %+v.", plot)
 	counter := make([]uint32, plot.Height*plot.Width)
-	max := uint32(0)
 	var wg sync.WaitGroup
 	for i := 0; i < plot.SampleSize; i++ {
 		wg.Add(1)
@@ -48,11 +47,17 @@ func Plot(plot parameters.Plot) (*image.RGBA, error) {
 
 				// The same counter could be incremented by more than one
 				// goroutine so increment as an atomic operation.
-				if val := atomic.AddUint32(&counter[index], 1); val > max {
-					max = val
-				}
+				atomic.AddUint32(&counter[index], 1)
 			}
 		}()
+	}
+
+	// Find the highest count, which will be used as an index for the gradient.
+	max := counter[0]
+	for _, c := range counter {
+		if max < c {
+			max = c
+		}
 	}
 	log.Println("Highest count:", max)
 
