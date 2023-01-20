@@ -3,9 +3,12 @@
 package gradient
 
 import (
+	"fmt"
 	"image/color"
 	"math"
 	"testing"
+
+	"github.com/lucasb-eyer/go-colorful"
 )
 
 func TestGetGradient(t *testing.T) {
@@ -29,5 +32,27 @@ func TestGetGradient(t *testing.T) {
 		t.Errorf("Got grey %v, want %v.", g[1], grey)
 	} else if g[2] != white {
 		t.Errorf("Got white %v, want %v.", g[2], white)
+	}
+}
+
+func TestColorfulToColor(t *testing.T) {
+	var tests = []struct {
+		c    colorful.Color
+		want color.RGBA
+	}{
+		{colorful.Color{R: 1, G: 1, B: 1}, color.RGBA{R: 255, G: 255, B: 255, A: 255}},
+		{colorful.Color{R: 1, G: 0, B: 0}, color.RGBA{R: 255, G: 0, B: 0, A: 255}},
+		{colorful.Color{R: 0, G: 1, B: 0}, color.RGBA{R: 0, G: 255, B: 0, A: 255}},
+		{colorful.Color{R: 0, G: 0, B: 1}, color.RGBA{R: 0, G: 0, B: 255, A: 255}},
+	}
+
+	for _, tt := range tests {
+		testname := fmt.Sprintf("%v", tt.c)
+		t.Run(testname, func(t *testing.T) {
+			got := colorfulToColor(tt.c)
+			if got != tt.want {
+				t.Errorf("Got %v, want %v.", got, tt.want)
+			}
+		})
 	}
 }
