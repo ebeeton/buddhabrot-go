@@ -56,3 +56,17 @@ func TestColorfulToColor(t *testing.T) {
 		})
 	}
 }
+
+func TestGetInterpolatedColor(t *testing.T) {
+	table := gradientTable{
+		stop{col: colorful.Color{R: 0, G: 0, B: 0}, pos: 0},
+		stop{col: colorful.Color{R: 1, G: 1, B: 1}, pos: 1},
+	}
+	want := colorful.Color{R: 0.5, G: 0.5, B: 0.5}
+
+	got := table.getInterpolatedColor(0.5)
+
+	if got != want {
+		t.Errorf("Got %v, want %v.", got, want)
+	}
+}
