@@ -54,12 +54,15 @@ func Plot(plot parameters.Plot) (*image.RGBA, error) {
 
 	// Find the highest count, which will be used as an index for the gradient.
 	max := counter[0]
+	histogram := make(map[uint32]uint32)
 	for _, c := range counter {
+		histogram[c] += 1
 		if max < c {
 			max = c
 		}
 	}
 	log.Println("Highest count:", max)
+	log.Println(histogram)
 
 	// Get the gradient palette used to color pixels based on hit count.
 	g := gradient.GetGradient(plot.Gradient, paletteColors)
