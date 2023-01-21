@@ -10,6 +10,7 @@ import (
 	"sync/atomic"
 
 	"github.com/ebeeton/buddhalbrot-go/gradient"
+	"github.com/ebeeton/buddhalbrot-go/histogram"
 	"github.com/ebeeton/buddhalbrot-go/parameters"
 	"github.com/ebeeton/buddhalbrot-go/timer"
 )
@@ -54,15 +55,16 @@ func Plot(plot parameters.Plot) (*image.RGBA, error) {
 
 	// Find the highest count, which will be used as an index for the gradient.
 	max := counter[0]
-	histogram := make(map[uint32]uint32)
+	h := make(histogram.Histogram)
 	for _, c := range counter {
-		histogram[c] += 1
+		h[c] += 1
 		if max < c {
 			max = c
 		}
 	}
 	log.Println("Highest count:", max)
-	log.Println(histogram)
+	h.Normalize(plot.Height * plot.Width)
+	log.Println(h)
 
 	// Get the gradient palette used to color pixels based on hit count.
 	g := gradient.GetGradient(plot.Gradient, paletteColors)
