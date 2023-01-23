@@ -12,9 +12,9 @@ import "github.com/ebeeton/buddhalbrot-go/gradient"
 // their positions in a linear gradient used to color the image.
 type Plot struct {
 	SampleSize,
-	MaxIterations int
+	MaxIterations int `validate:"gte=1"`
 	Region Region
 	Width,
-	Height int
+	Height int `validate:"gte=1"`
 	Gradient []gradient.Stop
 }

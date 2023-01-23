@@ -13,6 +13,7 @@ import (
 
 	"github.com/ebeeton/buddhalbrot-go/buddhabrot"
 	"github.com/ebeeton/buddhalbrot-go/parameters"
+	"github.com/go-playground/validator/v10"
 )
 
 func main() {
@@ -28,6 +29,11 @@ func main() {
 				log.Println("Decode failed:", err)
 				w.WriteHeader(http.StatusInternalServerError)
 				return
+			}
+			validate := validator.New()
+			if err := validate.Struct(plot); err != nil {
+				log.Println(err.Error())
+				w.WriteHeader(http.StatusBadRequest)
 			} else if img, err := buddhabrot.Plot(plot); err != nil {
 				log.Println("Plot failed:", err)
 				w.WriteHeader(http.StatusInternalServerError)
