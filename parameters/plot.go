@@ -16,5 +16,5 @@ type Plot struct {
 	Region Region
 	Width,
 	Height int `validate:"gte=1"`
-	Gradient []gradient.Stop `validate:"required,dive"`
+	Gradient []gradient.Stop `validate:"gte=2,dive"`
 }
