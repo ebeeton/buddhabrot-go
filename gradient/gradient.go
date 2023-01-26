@@ -6,6 +6,7 @@ import (
 	"image/color"
 	"math"
 
+	"github.com/go-playground/validator/v10"
 	"github.com/lucasb-eyer/go-colorful"
 )
 
@@ -61,4 +62,18 @@ func (gt gradientTable) getInterpolatedColor(t float64) colorful.Color {
 
 	// We're not between any points, so return the last color.
 	return gt[len(gt)-1].col
+}
+
+func ValidateGradient(fl validator.FieldLevel) bool {
+	// TODO:: How do you add specific error messages?
+	stops := fl.Field().Interface().([]Stop)
+	if len(stops) < 2 {
+		return false
+	} else if stops[0].Position != 0 {
+		return false
+	} else if stops[len(stops)-1].Position != 1 {
+		return false
+	}
+
+	return true
 }

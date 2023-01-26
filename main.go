@@ -12,6 +12,7 @@ import (
 	"time"
 
 	"github.com/ebeeton/buddhalbrot-go/buddhabrot"
+	"github.com/ebeeton/buddhalbrot-go/gradient"
 	"github.com/ebeeton/buddhalbrot-go/parameters"
 	"github.com/go-playground/validator/v10"
 )
@@ -30,7 +31,10 @@ func main() {
 				w.WriteHeader(http.StatusInternalServerError)
 				return
 			}
+
 			validate := validator.New()
+			validate.RegisterValidation("validateGradient", gradient.ValidateGradient)
+
 			if err := validate.Struct(plot); err != nil {
 				log.Println(err.Error())
 				w.WriteHeader(http.StatusBadRequest)
