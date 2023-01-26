@@ -6,6 +6,9 @@ A Buddhabrot plotter written as a Go learning exercise.
 
 ![Buddhabrot image](/samples/sample.png)
 
+This plot took about eight minutes on an eight-core machine using the parameters
+below.
+
 # Usage
 
 `go run .` starts an HTTP server on port 3000. The parameters used to plot the
@@ -13,8 +16,8 @@ image are posted in JSON, and a PNG image is written to the response.
 
 ```json
 {
-    "sampleSize":500000000,
-    "maxIterations":1000,
+    "sampleSize":1000000000,
+    "maxIterations":5000,
     "region": {
         "minReal":-2.0,
         "maxReal":2.0,
@@ -27,15 +30,20 @@ image are posted in JSON, and a PNG image is written to the response.
             "color":"#000000",
             "position":0.0
         }, {
-           "color":"#00FF00",
+           "color":"#ff8000",
+           "position":0.2
+        }, {
+           "color":"#ffff00",
            "position":0.25
         }, {
+            "color":"#FFFFFF",
             "color":"#FFFFFF",
             "position":0.75
         }, {
             "color":"#FFFFFF",
             "position":1.0
-        }]
+        }
+    ]
 }
 ```
 
