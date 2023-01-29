@@ -2,10 +2,13 @@
 package buddhabrot
 
 import (
+	"bufio"
+	"fmt"
 	"image"
 	"log"
 	"math"
 	"math/rand"
+	"os"
 	"sync"
 	"sync/atomic"
 
@@ -60,6 +63,9 @@ func Plot(plot parameters.Plot) (*image.RGBA, error) {
 		}
 	}
 	log.Println("Highest count:", max)
+	if plot.DumpCounterFile {
+		dumpCounterFile(counter)
+	}
 
 	// Get the gradient palette used to color pixels based on hit count.
 	g := gradient.GetGradient(plot.Gradient, paletteColors)
@@ -125,4 +131,25 @@ func plotOrbits(c complex128, maxIterations int, r parameters.Region) []complex1
 
 func lerp(first, second uint8, stop float64) uint8 {
 	return uint8(float64(first)*(1.0-stop) + float64(second)*stop)
+}
+
+func dumpCounterFile(counter []uint32) {
+	if err := os.MkdirAll("log", os.ModePerm); err != nil {
+		log.Printf("Failed to create log director: %v", err.Error())
+		return
+	}
+	f, err := os.Create("log/counter.txt")
+	if err != nil {
+		log.Printf("Failed to create dump file: %v", err.Error())
+		return
+	}
+	defer f.Close()
+	w := bufio.NewWriter(f)
+	for _, c := range counter {
+		if _, err := w.WriteString(fmt.Sprintf("%d\n", c)); err != nil {
+			log.Printf("WriteString error: %v", err.Error())
+			break
+		}
+	}
+	w.Flush()
 }

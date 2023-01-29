@@ -16,5 +16,6 @@ type Plot struct {
 	Region Region
 	Width,
 	Height int `validate:"gte=1"`
-	Gradient []gradient.Stop `validate:"validateGradient"`
+	Gradient        []gradient.Stop `validate:"validateGradient"`
+	DumpCounterFile bool
 }
