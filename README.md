@@ -12,7 +12,9 @@ below.
 # Usage
 
 `go run .` starts an HTTP server on port 3000. The parameters used to plot the
-image are posted in JSON, and a PNG image is written to the response.
+image are posted in JSON, and a PNG image is written to the response. If set to
+true, the `dumpCounterFile` property wil dump the orbit counts per pixel to a
+file called counter.txt in the log directory.
 
 ```json
 {
@@ -31,19 +33,19 @@ image are posted in JSON, and a PNG image is written to the response.
             "position":0.0
         }, {
            "color":"#ff8000",
-           "position":0.2
+           "position":0.3
         }, {
            "color":"#ffff00",
            "position":0.25
         }, {
-            "color":"#FFFFFF",
             "color":"#FFFFFF",
             "position":0.75
         }, {
             "color":"#FFFFFF",
             "position":1.0
         }
-    ]
+    ],
+    "dumpCounterFile": false
 }
 ```
 
