@@ -19,6 +19,8 @@ type stop struct {
 
 type gradientTable []stop
 
+// GetGradient generates a gradient of count number of colors from a slice of
+// Stops. The resulting slice of color.RGBA can be used as a palette.
 func GetGradient(stops []Stop, count int) []color.RGBA {
 	t := gradientTable{}
 	p := []color.RGBA{}
@@ -64,6 +66,7 @@ func (gt gradientTable) getInterpolatedColor(t float64) colorful.Color {
 	return gt[len(gt)-1].col
 }
 
+// ValidateGradient validates that the state of a slice of Stops.
 func ValidateGradient(fl validator.FieldLevel) bool {
 	// TODO:: How do you add specific error messages?
 	stops := fl.Field().Interface().([]Stop)
