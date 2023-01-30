@@ -9,7 +9,9 @@ import "github.com/ebeeton/buddhalbrot-go/gradient"
 // point is in the Mandelbrot set. It is also the maximum number of iterations
 // to count orbits that pass through points visible in the plot. Region defines
 // the region on the complex plane to plot. Gradient is a slice of colors and
-// their positions in a linear gradient used to color the image.
+// their positions in a linear gradient used to color the image. If set to
+// true, the `dumpCounterFile` property wil dump the orbit counts per pixel to a
+// file called counter.txt in the log directory.
 type Plot struct {
 	SampleSize,
 	MaxIterations int `validate:"gte=1"`
