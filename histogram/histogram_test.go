@@ -2,9 +2,13 @@
 
 package histogram
 
-import "testing"
+import (
+	"math"
+	"testing"
+)
 
 func TestNormalize(t *testing.T) {
+	const delta = 1e-10
 	h := Histogram{
 		117: 2,
 		118: 1,
@@ -24,7 +28,7 @@ func TestNormalize(t *testing.T) {
 		got += v
 	}
 
-	if got != want {
+	if math.Abs(got-want) > delta {
 		t.Errorf("Got %f, want %f.", got, want)
 	}
 }
