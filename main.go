@@ -18,6 +18,8 @@ import (
 )
 
 func main() {
+	validate := validator.New()
+
 	rand.Seed(time.Now().UnixMicro())
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		switch r.Method {
@@ -31,8 +33,6 @@ func main() {
 				w.WriteHeader(http.StatusInternalServerError)
 				return
 			}
-
-			validate := validator.New()
 			if err := validate.RegisterValidation("validateGradient", gradient.ValidateGradient); err != nil {
 				log.Println("RegisterValidation failed: ", err.Error())
 				w.WriteHeader(http.StatusInternalServerError)
