@@ -33,19 +33,18 @@ func main() {
 			}
 
 			validate := validator.New()
-			validate.RegisterValidation("validateGradient", gradient.ValidateGradient)
-
-			if err := validate.Struct(plot); err != nil {
-				log.Println(err.Error())
+			if err := validate.RegisterValidation("validateGradient", gradient.ValidateGradient); err != nil {
+				log.Println("RegisterValidation failed: ", err.Error())
+				w.WriteHeader(http.StatusInternalServerError)
+			} else if err := validate.Struct(plot); err != nil {
+				log.Println("Plot parameter failed validation: ", err.Error())
 				w.WriteHeader(http.StatusBadRequest)
 			} else if img, err := buddhabrot.Plot(plot); err != nil {
 				log.Println("Plot failed:", err)
 				w.WriteHeader(http.StatusInternalServerError)
-				return
 			} else if err := writeImage(w, img); err != nil {
 				log.Println("WriteImage failed:", err)
 				w.WriteHeader(http.StatusInternalServerError)
-				return
 			}
 			log.Println("Request processed.")
 		}
