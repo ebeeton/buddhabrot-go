@@ -37,23 +37,9 @@ func Plot(plot parameters.Plot) (*image.RGBA, error) {
 	var wg sync.WaitGroup
 	for i := 0; i < plot.SampleSize; i++ {
 		wg.Add(1)
-		go func() {
-			defer wg.Done()
-			point := randomPointNotInMandelbrotSet(plot.MaxIterations)
-			orbits := plotOrbits(point, plot.MaxIterations, plot.Region)
-
-			for _, v := range orbits {
-				// Convert from complex to image space.
-				pX := int(linearScale(real(v), plot.Region.MinReal, plot.Region.MaxReal, 0, float64(plot.Width)))
-				pY := int(linearScale(imag(v), plot.Region.MinImag, plot.Region.MaxImag, 0, float64(plot.Height)))
-				index := pY*plot.Width + pX
-
-				// The same counter could be incremented by more than one
-				// goroutine so increment as an atomic operation.
-				atomic.AddUint32(&counter[index], 1)
-			}
-		}()
+		go plotPoint(plot, counter, &wg)
 	}
+	wg.Wait()
 
 	// Find the highest count, which will be used as an index for the gradient.
 	max := counter[0]
@@ -83,6 +69,23 @@ func Plot(plot parameters.Plot) (*image.RGBA, error) {
 	}
 	log.Println("Plot complete.")
 	return img, nil
+}
+
+func plotPoint(plot parameters.Plot, counter []uint32, wg *sync.WaitGroup) {
+	defer wg.Done()
+	point := randomPointNotInMandelbrotSet(plot.MaxIterations)
+	orbits := plotOrbits(point, plot.MaxIterations, plot.Region)
+
+	for _, v := range orbits {
+		// Convert from complex to image space.
+		pX := int(linearScale(real(v), plot.Region.MinReal, plot.Region.MaxReal, 0, float64(plot.Width)))
+		pY := int(linearScale(imag(v), plot.Region.MinImag, plot.Region.MaxImag, 0, float64(plot.Height)))
+		index := pY*plot.Width + pX
+
+		// The same counter could be incremented by more than one
+		// goroutine so increment as an atomic operation.
+		atomic.AddUint32(&counter[index], 1)
+	}
 }
 
 func isInMandelbrotSet(c complex128, maxIterations int) bool {
