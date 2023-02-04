@@ -5,10 +5,12 @@ import (
 	"bufio"
 	"fmt"
 	"image"
+	"image/color"
 	"log"
 	"math"
 	"math/rand"
 	"os"
+	"sort"
 	"sync"
 	"sync/atomic"
 
@@ -41,34 +43,56 @@ func Plot(plot parameters.Plot) (*image.RGBA, error) {
 	}
 	wg.Wait()
 
-	// Find the highest count, which will be used as an index for the gradient.
-	max := counter[0]
-	for _, c := range counter {
-		if max < c {
-			max = c
-		}
-	}
-	log.Println("Highest count:", max)
 	if plot.DumpCounterFile {
 		dumpCounterFile(counter)
 	}
 
 	// Get the gradient palette used to color pixels based on hit count.
-	g := gradient.GetGradient(plot.Gradient, paletteColors)
+	g := getPaletteMap(counter, plot.Gradient)
 
-	// Assign each pixel color channel a value based on how many times an orbit
-	// "passed through" it.
+	// Assign each pixel a color based on how many times an orbit "passed
+	// through" it.
 	img := image.NewRGBA(image.Rect(0, 0, plot.Width, plot.Height))
 	pixelStride := img.Stride >> 2
 	for y := 0; y < plot.Height; y++ {
 		for x := 0; x < plot.Width; x++ {
 			cIdx := pixelStride*y + x
-			gIdx := uint8(float64(counter[cIdx]) / float64(max) * math.MaxUint8)
-			img.SetRGBA(x, y, g[gIdx])
+			img.SetRGBA(x, y, g[counter[cIdx]])
 		}
 	}
 	log.Println("Plot complete.")
 	return img, nil
+}
+
+func getPaletteMap(counter []uint32, stops []gradient.Stop) map[uint32]color.RGBA {
+	// Get unique orbit counts, and assign each one a color based on where it
+	// would fall in the desired gradient.
+	paletteMap := make(map[uint32]color.RGBA)
+	for _, c := range counter {
+		paletteMap[c] = color.RGBA{}
+	}
+	log.Println("Unique orbit counts: ", len(paletteMap))
+
+	// Extract the unique orbit counts.
+	keys := make([]uint32, len(paletteMap))
+	i := 0
+	for k := range paletteMap {
+		keys[i] = k
+		i++
+	}
+
+	// Sort the unique orbit counts.
+	sort.Slice(keys, func(i, j int) bool {
+		return keys[i] < keys[j]
+	})
+
+	// Map each unique orbit count to a color.
+	g := gradient.GetGradient(stops, len(keys))
+	for i, k := range keys {
+		paletteMap[k] = g[i]
+	}
+
+	return paletteMap
 }
 
 func plotPoint(plot parameters.Plot, counter []uint32, wg *sync.WaitGroup) {
