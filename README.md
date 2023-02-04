@@ -33,13 +33,10 @@ file called counter.txt in the log directory.
             "position":0.0
         }, {
            "color":"#ff8000",
-           "position":0.3
+           "position":0.5
         }, {
            "color":"#ffff00",
-           "position":0.25
-        }, {
-            "color":"#FFFFFF",
-            "position":0.75
+           "position":0.75
         }, {
             "color":"#FFFFFF",
             "position":1.0
