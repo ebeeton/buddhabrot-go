@@ -60,18 +60,18 @@ func Plot(plot parameters.Plot) (*image.RGBA, error) {
 			img.SetRGBA(x, y, g[counter[cIdx]])
 		}
 	}
-	log.Println("Plot complete.")
 	return img, nil
 }
 
 func getPaletteMap(counter []uint32, stops []gradient.Stop) map[uint32]color.RGBA {
+	defer timer.Timer("getPaletteMap")()
 	// Get unique orbit counts, and assign each one a color based on where it
 	// would fall in the desired gradient.
 	paletteMap := make(map[uint32]color.RGBA)
 	for _, c := range counter {
 		paletteMap[c] = color.RGBA{}
 	}
-	log.Println("Unique orbit counts: ", len(paletteMap))
+	log.Println("Unique orbit counts:", len(paletteMap))
 
 	// Extract the unique orbit counts.
 	keys := make([]uint32, len(paletteMap))

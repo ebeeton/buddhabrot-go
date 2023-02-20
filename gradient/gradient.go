@@ -6,6 +6,7 @@ import (
 	"image/color"
 	"math"
 
+	"github.com/ebeeton/buddhalbrot-go/timer"
 	"github.com/go-playground/validator/v10"
 	"github.com/lucasb-eyer/go-colorful"
 )
@@ -22,6 +23,7 @@ type gradientTable []stop
 // GetGradient generates a gradient of count number of colors from a slice of
 // Stops. The resulting slice of color.RGBA can be used as a palette.
 func GetGradient(stops []Stop, count int) []color.RGBA {
+	defer timer.Timer("GetGradient")()
 	t := gradientTable{}
 	p := []color.RGBA{}
 	for _, s := range stops {
