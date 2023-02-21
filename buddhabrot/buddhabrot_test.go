@@ -6,8 +6,8 @@ import (
 	"math"
 	"testing"
 
-	"github.com/ebeeton/buddhalbrot-go/gradient"
-	"github.com/ebeeton/buddhalbrot-go/parameters"
+	"github.com/ebeeton/buddhabrot-go/gradient"
+	"github.com/ebeeton/buddhabrot-go/parameters"
 )
 
 func TestPlot(t *testing.T) {

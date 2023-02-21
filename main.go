@@ -11,9 +11,9 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/ebeeton/buddhalbrot-go/buddhabrot"
-	"github.com/ebeeton/buddhalbrot-go/gradient"
-	"github.com/ebeeton/buddhalbrot-go/parameters"
+	"github.com/ebeeton/buddhabrot-go/buddhabrot"
+	"github.com/ebeeton/buddhabrot-go/gradient"
+	"github.com/ebeeton/buddhabrot-go/parameters"
 	"github.com/go-playground/validator/v10"
 )
 

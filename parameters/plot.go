@@ -1,7 +1,7 @@
 // Package parameters defines parameters used to plot Buddhabrot images.
 package parameters
 
-import "github.com/ebeeton/buddhalbrot-go/gradient"
+import "github.com/ebeeton/buddhabrot-go/gradient"
 
 // Plot represents the parameters to plot a Buddhabrot image of a given width
 // and height. SampleSize determines the number of sample points used.

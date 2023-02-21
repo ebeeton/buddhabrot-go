@@ -14,9 +14,9 @@ import (
 	"sync"
 	"sync/atomic"
 
-	"github.com/ebeeton/buddhalbrot-go/gradient"
-	"github.com/ebeeton/buddhalbrot-go/parameters"
-	"github.com/ebeeton/buddhalbrot-go/timer"
+	"github.com/ebeeton/buddhabrot-go/gradient"
+	"github.com/ebeeton/buddhabrot-go/parameters"
+	"github.com/ebeeton/buddhabrot-go/timer"
 )
 
 const (

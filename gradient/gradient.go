@@ -6,7 +6,7 @@ import (
 	"image/color"
 	"math"
 
-	"github.com/ebeeton/buddhalbrot-go/timer"
+	"github.com/ebeeton/buddhabrot-go/timer"
 	"github.com/go-playground/validator/v10"
 	"github.com/lucasb-eyer/go-colorful"
 )

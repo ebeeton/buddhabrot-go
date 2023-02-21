@@ -1,4 +1,4 @@
-module github.com/ebeeton/buddhalbrot-go
+module github.com/ebeeton/buddhabrot-go
 
 go 1.20
 
