@@ -6,10 +6,8 @@ import (
 	"image"
 	"image/png"
 	"log"
-	"math/rand"
 	"net/http"
 	"strconv"
-	"time"
 
 	"github.com/ebeeton/buddhabrot-go/buddhabrot"
 	"github.com/ebeeton/buddhabrot-go/gradient"
@@ -20,7 +18,6 @@ import (
 func main() {
 	validate := validator.New()
 
-	rand.Seed(time.Now().UnixMicro())
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		switch r.Method {
 		case "POST":
