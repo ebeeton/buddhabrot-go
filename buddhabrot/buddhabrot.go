@@ -156,10 +156,6 @@ func plotOrbits(c complex128, maxIterations int, r parameters.Region) []complex1
 	return orbits
 }
 
-func lerp(first, second uint8, stop float64) uint8 {
-	return uint8(float64(first)*(1.0-stop) + float64(second)*stop)
-}
-
 func dumpCounterFile(counter []uint32) {
 	if err := os.MkdirAll("log", os.ModePerm); err != nil {
 		log.Printf("Failed to create log director: %v", err.Error())

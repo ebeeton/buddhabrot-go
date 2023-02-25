@@ -3,12 +3,9 @@
 package gradient
 
 import (
-	"fmt"
 	"image/color"
 	"math"
 	"testing"
-
-	"github.com/lucasb-eyer/go-colorful"
 )
 
 func TestGetGradient(t *testing.T) {
@@ -35,34 +32,12 @@ func TestGetGradient(t *testing.T) {
 	}
 }
 
-func TestColorfulToColor(t *testing.T) {
-	var tests = []struct {
-		c    colorful.Color
-		want color.RGBA
-	}{
-		{colorful.Color{R: 1, G: 1, B: 1}, color.RGBA{R: 255, G: 255, B: 255, A: 255}},
-		{colorful.Color{R: 1, G: 0, B: 0}, color.RGBA{R: 255, G: 0, B: 0, A: 255}},
-		{colorful.Color{R: 0, G: 1, B: 0}, color.RGBA{R: 0, G: 255, B: 0, A: 255}},
-		{colorful.Color{R: 0, G: 0, B: 1}, color.RGBA{R: 0, G: 0, B: 255, A: 255}},
-	}
-
-	for _, tt := range tests {
-		testname := fmt.Sprintf("%v", tt.c)
-		t.Run(testname, func(t *testing.T) {
-			got := colorfulToColor(tt.c)
-			if got != tt.want {
-				t.Errorf("Got %v, want %v.", got, tt.want)
-			}
-		})
-	}
-}
-
 func TestGetInterpolatedColor(t *testing.T) {
 	table := gradientTable{
-		stop{col: colorful.Color{R: 0, G: 0, B: 0}, pos: 0},
-		stop{col: colorful.Color{R: 1, G: 1, B: 1}, pos: 1},
+		stop{col: color.RGBA{R: 0, G: 0, B: 0, A: 255}, pos: 0},
+		stop{col: color.RGBA{R: 255, G: 255, B: 255, A: 255}, pos: 1},
 	}
-	want := colorful.Color{R: 0.5, G: 0.5, B: 0.5}
+	want := color.RGBA{R: 127, G: 127, B: 127, A: 255}
 
 	got := table.getInterpolatedColor(0.5)
 
