@@ -22,14 +22,12 @@ func TestPlot(t *testing.T) {
 		},
 	}
 
-	got, err := Plot(plot)
+	got := Plot(plot)
 
 	if got.Rect.Dx() != plot.Width {
 		t.Errorf("Got width %d, want %d", got.Rect.Dx(), plot.Width)
 	} else if got.Rect.Dy() != plot.Height {
 		t.Errorf("Got width %d, want %d", got.Rect.Dy(), plot.Height)
-	} else if err != nil {
-		t.Error(err)
 	}
 }
 
@@ -111,29 +109,5 @@ func TestPlotOrbits(t *testing.T) {
 		if got[i] != v {
 			t.Errorf("Index %d got %v, want %v.", i, got[i], v)
 		}
-	}
-}
-
-func TestLerp(t *testing.T) {
-	var tests = []struct {
-		first, second uint8
-		stop          float64
-		want          uint8
-	}{
-		{64, 192, 0.5, 128},
-		{0, 255, 0.25, 63},
-		{0, 255, 0.75, 191},
-		{0, 255, 0, 0},
-		{0, 255, 1.0, 255},
-	}
-
-	for _, tt := range tests {
-		testname := fmt.Sprintf("%d,%d,%f", tt.first, tt.second, tt.stop)
-		t.Run(testname, func(t *testing.T) {
-			got := lerp(tt.first, tt.second, tt.stop)
-			if got != tt.want {
-				t.Errorf("Got %d, want %d.", got, tt.want)
-			}
-		})
 	}
 }

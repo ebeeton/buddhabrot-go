@@ -39,10 +39,11 @@ func main() {
 			} else if err := validate.Struct(plot); err != nil {
 				log.Println("Plot parameter failed validation: ", err.Error())
 				w.WriteHeader(http.StatusBadRequest)
-			} else if img, err := buddhabrot.Plot(plot); err != nil {
-				log.Println("Plot failed:", err)
-				w.WriteHeader(http.StatusInternalServerError)
-			} else if err := writeImage(w, img); err != nil {
+			}
+
+			img := buddhabrot.Plot(plot)
+
+			if err := writeImage(w, img); err != nil {
 				log.Println("WriteImage failed:", err)
 				w.WriteHeader(http.StatusInternalServerError)
 			}

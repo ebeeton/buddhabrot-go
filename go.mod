@@ -2,10 +2,7 @@ module github.com/ebeeton/buddhabrot-go
 
 go 1.20
 
-require (
-	github.com/go-playground/validator/v10 v10.11.1
-	github.com/lucasb-eyer/go-colorful v1.2.0
-)
+require github.com/go-playground/validator/v10 v10.11.1
 
 require (
 	github.com/go-playground/locales v0.14.0 // indirect

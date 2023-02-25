@@ -32,7 +32,7 @@ const (
 // infinity. It increments a counter for each point on the complex plane every
 // time an orbit passes through it. The counter value is used to determine the
 // grayscale value of each pixel in the returned image.RGBA pointer.
-func Plot(plot parameters.Plot) (*image.RGBA, error) {
+func Plot(plot parameters.Plot) *image.RGBA {
 	defer timer.Timer("Plot")()
 	log.Printf("Plot started with params: %+v.", plot)
 	counter := make([]uint32, plot.Height*plot.Width)
@@ -60,7 +60,7 @@ func Plot(plot parameters.Plot) (*image.RGBA, error) {
 			img.SetRGBA(x, y, g[counter[cIdx]])
 		}
 	}
-	return img, nil
+	return img
 }
 
 func getPaletteMap(counter []uint32, stops []gradient.Stop) map[uint32]color.RGBA {
@@ -154,10 +154,6 @@ func plotOrbits(c complex128, maxIterations int, r parameters.Region) []complex1
 		z = z*z + c
 	}
 	return orbits
-}
-
-func lerp(first, second uint8, stop float64) uint8 {
-	return uint8(float64(first)*(1.0-stop) + float64(second)*stop)
 }
 
 func dumpCounterFile(counter []uint32) {
