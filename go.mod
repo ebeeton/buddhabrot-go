@@ -11,4 +11,7 @@ require (
 	golang.org/x/crypto v0.0.0-20220314234659-1baeb1ce4c0b // indirect
 	golang.org/x/sys v0.0.0-20220722155257-8c9f86f7a55f // indirect
 	golang.org/x/text v0.3.8 // indirect
+	github.com/ebeeton/gradient v0.0.0
 )
+
+replace github.com/ebeeton/gradient v0.0.0 => ../gradient
