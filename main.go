@@ -10,7 +10,6 @@ import (
 	"strconv"
 
 	"github.com/ebeeton/buddhabrot-go/buddhabrot"
-	"github.com/ebeeton/buddhabrot-go/gradient"
 	"github.com/ebeeton/buddhabrot-go/parameters"
 	"github.com/go-playground/validator/v10"
 )
@@ -30,7 +29,7 @@ func main() {
 				w.WriteHeader(http.StatusInternalServerError)
 				return
 			}
-			if err := validate.RegisterValidation("validateGradient", gradient.ValidateGradient); err != nil {
+			if err := validate.RegisterValidation("validateStops", parameters.ValidateStops); err != nil {
 				log.Println("RegisterValidation failed: ", err.Error())
 				w.WriteHeader(http.StatusInternalServerError)
 			} else if err := validate.Struct(plot); err != nil {

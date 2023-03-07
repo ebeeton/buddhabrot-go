@@ -6,7 +6,6 @@ import (
 	"math"
 	"testing"
 
-	"github.com/ebeeton/buddhabrot-go/gradient"
 	"github.com/ebeeton/buddhabrot-go/parameters"
 )
 
@@ -16,7 +15,7 @@ func TestPlot(t *testing.T) {
 		MaxIterations: 10,
 		Width:         256,
 		Height:        128,
-		Gradient: []gradient.Stop{
+		Gradient: []parameters.Stop{
 			{Color: "#000000"},
 			{Color: "#FFFFFF"},
 		},

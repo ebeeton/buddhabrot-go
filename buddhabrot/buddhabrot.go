@@ -14,9 +14,9 @@ import (
 	"sync"
 	"sync/atomic"
 
-	"github.com/ebeeton/buddhabrot-go/gradient"
 	"github.com/ebeeton/buddhabrot-go/parameters"
 	"github.com/ebeeton/buddhabrot-go/timer"
+	"github.com/ebeeton/gradient"
 )
 
 const (
@@ -63,7 +63,7 @@ func Plot(plot parameters.Plot) *image.RGBA {
 	return img
 }
 
-func getPaletteMap(counter []uint32, stops []gradient.Stop) map[uint32]color.RGBA {
+func getPaletteMap(counter []uint32, stops []parameters.Stop) map[uint32]color.RGBA {
 	defer timer.Timer("getPaletteMap")()
 	// Get unique orbit counts, and assign each one a color based on where it
 	// would fall in the desired gradient.
@@ -87,7 +87,20 @@ func getPaletteMap(counter []uint32, stops []gradient.Stop) map[uint32]color.RGB
 	})
 
 	// Map each unique orbit count to a color.
-	g := gradient.GetGradient(stops, len(keys))
+	var gradStops []gradient.Stop
+	for _, s := range stops {
+		color, err := gradient.ColorFromHex(s.Color)
+		if err != nil {
+			// TODO:: pass this up the call stack instead.
+			log.Printf("err")
+		}
+
+		gradStops = append(gradStops, gradient.Stop{
+			Color:    color,
+			Position: s.Position,
+		})
+	}
+	g := gradient.GetGradient(gradStops, len(keys))
 	for i, k := range keys {
 		paletteMap[k] = g[i]
 	}

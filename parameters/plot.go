@@ -1,8 +1,6 @@
 // Package parameters defines parameters used to plot Buddhabrot images.
 package parameters
 
-import "github.com/ebeeton/buddhabrot-go/gradient"
-
 // Plot represents the parameters to plot a Buddhabrot image of a given width
 // and height. SampleSize determines the number of sample points used.
 // MaxIterations is the maximum number of iterations to determine if a sample
@@ -18,6 +16,6 @@ type Plot struct {
 	Region Region
 	Width,
 	Height int `validate:"gte=1"`
-	Gradient        []gradient.Stop `validate:"validateGradient"`
+	Gradient        []Stop `validate:"validateStops"`
 	DumpCounterFile bool
 }
