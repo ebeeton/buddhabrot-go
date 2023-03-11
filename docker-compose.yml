@@ -7,3 +7,9 @@ services:
       dockerfile: Dockerfile
     ports:
       - "3000:3000"
+
+  rabbitmq:
+    image: rabbitmq:3.11-management
+    ports:
+      - "5672:5672"
+      - "15672:15672"
