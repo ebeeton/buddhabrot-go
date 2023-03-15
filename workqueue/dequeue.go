@@ -2,19 +2,13 @@
 package workqueue
 
 import (
-	"context"
 	"log"
-	"time"
 
 	amqp "github.com/rabbitmq/amqp091-go"
 )
 
-const (
-	timeout = 5 * time.Second
-)
-
-// Enqueue enqueues plot requests.
-func Enqueue(request string) {
+// Dequeue dequeues plot requests.
+func Dequeue() {
 	conn, err := amqp.Dial("amqp://guest:guest@localhost:5672/")
 	failOnError(err, "Failed to connect to RabbitMQ.")
 	defer conn.Close()
@@ -33,19 +27,25 @@ func Enqueue(request string) {
 	)
 	failOnError(err, "Failed to declare the queue.")
 
-	ctx, cancel := context.WithTimeout(context.Background(), timeout)
-	defer cancel()
+	msgs, err := ch.Consume(
+		q.Name, // queue
+		"",     // consumer
+		true,   // auto-ack
+		false,  // exclusive
+		false,  // no-local
+		false,  // no-wait
+		nil,    // args
+	)
+	failOnError(err, "Failed to register a consumer.")
 
-	err = ch.PublishWithContext(ctx,
-		"",
-		q.Name,
-		false,
-		false,
-		amqp.Publishing{
-			ContentType: "text/plain",
-			Body:        []byte(request),
-		})
-	failOnError(err, "Failed to publish the request.")
+	var forever chan struct{}
 
-	log.Printf("Sent %s.", request)
+	go func() {
+		for m := range msgs {
+			log.Printf("Received a message: %s", m.Body)
+		}
+	}()
+
+	log.Printf("Waiting for messages. Press CTRL+C to exit.")
+	<-forever
 }
