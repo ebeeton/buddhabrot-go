@@ -4,6 +4,8 @@ go 1.20
 
 require github.com/go-playground/validator/v10 v10.11.1
 
+require github.com/rabbitmq/amqp091-go v1.7.0 // indirect
+
 require (
 	github.com/ebeeton/gradient v0.0.1
 	github.com/go-playground/locales v0.14.0 // indirect
