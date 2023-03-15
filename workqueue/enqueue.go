@@ -37,10 +37,10 @@ func Enqueue(request string) {
 	defer cancel()
 
 	err = ch.PublishWithContext(ctx,
-		"",
-		q.Name,
-		false,
-		false,
+		"",     // exchange
+		q.Name, // routing key
+		false,  // mandatory
+		false,  // immediate
 		amqp.Publishing{
 			ContentType: "text/plain",
 			Body:        []byte(request),
