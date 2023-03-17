@@ -16,7 +16,7 @@ import (
 
 func main() {
 	validate := validator.New()
-
+	log.Println("Starting.")
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		switch r.Method {
 		case "POST":
