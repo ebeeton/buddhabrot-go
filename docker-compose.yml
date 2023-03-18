@@ -14,9 +14,19 @@ services:
       - "5672:5672"
       - "15672:15672"
 
+  # Hat tip to https://cimentadaj.github.io/blog/2020-11-25-deploying-mysql-database-using-docker/deploying-mysql-database-using-docker/
   mysql:
     image: mysql:8.0
     ports:
       - "3306:3306"
     environment:
       - MYSQL_ROOT_PASSWORD=${DB_ROOT_PASSWORD}
+    volumes:
+      - ./mysql/sql:/docker-entrypoint-initdb.d
+      - mysql-data:/var/lib/mysql
+      - ./mysql/conf:/etc/mysql/conf.d
+
+# https://github.com/docker-library/mysql/issues/302
+# https://stackoverflow.com/a/65348042
+volumes:
+  mysql-data:

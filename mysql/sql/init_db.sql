@@ -1,0 +1,11 @@
+CREATE DATABASE buddhabrot;
+
+FLUSH PRIVILEGES;
+
+USE buddhabrot;
+
+CREATE TABLE plots (
+    id MEDIUMINT NOT NULL AUTO_INCREMENT,
+    image MEDIUMBLOB NULL,
+    PRIMARY KEY (id)
+);
