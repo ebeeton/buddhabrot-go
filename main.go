@@ -15,7 +15,12 @@ import (
 )
 
 func main() {
+	// Register a validator for plot parameters.
 	validate := validator.New()
+	if err := validate.RegisterValidation("validateStops", parameters.ValidateStops); err != nil {
+		log.Fatal(err)
+	}
+
 	log.Println("Starting.")
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		switch r.Method {
@@ -28,13 +33,10 @@ func main() {
 				log.Println("Decode failed:", err)
 				w.WriteHeader(http.StatusInternalServerError)
 				return
-			}
-			if err := validate.RegisterValidation("validateStops", parameters.ValidateStops); err != nil {
-				log.Println("RegisterValidation failed: ", err.Error())
-				w.WriteHeader(http.StatusInternalServerError)
 			} else if err := validate.Struct(plot); err != nil {
 				log.Println("Plot parameter failed validation: ", err.Error())
 				w.WriteHeader(http.StatusBadRequest)
+				return
 			}
 
 			// Test mysql connection.
