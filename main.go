@@ -37,6 +37,12 @@ func main() {
 				w.WriteHeader(http.StatusBadRequest)
 			}
 
+			// Test mysql connection.
+			db := connect()
+			if db != nil {
+				log.Println("Connected to database.")
+			}
+
 			img := buddhabrot.Plot(plot)
 
 			if err := writeImage(w, img); err != nil {

@@ -7,6 +7,9 @@ services:
       - "3000:3000"
     depends_on:
       - rabbitmq
+      - mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=${DB_ROOT_PASSWORD}
 
   rabbitmq:
     image: rabbitmq:3.11-management
