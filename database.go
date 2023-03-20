@@ -2,13 +2,12 @@ package main
 
 import (
 	"database/sql"
-	"log"
 	"os"
 
 	"github.com/go-sql-driver/mysql"
 )
 
-func connect() *sql.DB {
+func connect() (*sql.DB, error) {
 	// TODO:: configure a user and don't use root.
 	cfg := mysql.Config{
 		User:   "root",
@@ -22,12 +21,12 @@ func connect() *sql.DB {
 	var err error
 	db, err = sql.Open("mysql", cfg.FormatDSN())
 	if err != nil {
-		log.Fatal(err)
+		return nil, err
 	}
 
 	if err := db.Ping(); err != nil {
-		log.Fatal(err)
+		return nil, err
 	}
 
-	return db
+	return db, nil
 }

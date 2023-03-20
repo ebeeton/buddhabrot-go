@@ -30,18 +30,19 @@ func main() {
 			d.DisallowUnknownFields()
 			var plot parameters.Plot
 			if err := d.Decode(&plot); err != nil {
-				log.Println("Decode failed:", err)
+				log.Printf("Decode failed: %v", err)
 				w.WriteHeader(http.StatusInternalServerError)
 				return
 			} else if err := validate.Struct(plot); err != nil {
-				log.Println("Plot parameter failed validation: ", err.Error())
+				log.Printf("Plot parameter failed validation: %v", err)
 				w.WriteHeader(http.StatusBadRequest)
 				return
 			}
 
-			// Test mysql connection.
-			db := connect()
-			if db != nil {
+			// TODO:: persist the plot and parameters.
+			if _, err := connect(); err != nil {
+				log.Printf("Failed to connect to database: %v", err)
+			} else {
 				log.Println("Connected to database.")
 			}
 
