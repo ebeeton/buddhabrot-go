@@ -40,10 +40,10 @@ func main() {
 			}
 
 			// TODO:: persist the plot and parameters.
-			if _, err := connect(); err != nil {
+			if id, err := insert(); err != nil {
 				log.Printf("Failed to connect to database: %v", err)
 			} else {
-				log.Println("Connected to database.")
+				log.Printf("Insert returned %d.", id)
 			}
 
 			img := buddhabrot.Plot(plot)

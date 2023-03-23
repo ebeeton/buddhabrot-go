@@ -30,3 +30,23 @@ func connect() (*sql.DB, error) {
 
 	return db, nil
 }
+
+func insert() (int64, error) {
+	var err error
+	var db *sql.DB
+	db, err = connect()
+	if err != nil {
+		return 0, err
+	}
+
+	result, err := db.Exec("INSERT INTO plots (image) VALUES (?)", "Hello!")
+	if err != nil {
+		return 0, err
+	}
+	id, err := result.LastInsertId()
+	if err != nil {
+		return 0, err
+	}
+
+	return id, nil
+}
