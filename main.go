@@ -39,14 +39,14 @@ func main() {
 				return
 			}
 
-			// TODO:: persist the plot and parameters.
-			if id, err := insert(); err != nil {
+			img := buddhabrot.Plot(plot)
+
+			// Persist the plot and parameters.
+			if id, err := insert(plot, img); err != nil {
 				log.Printf("Failed to connect to database: %v", err)
 			} else {
 				log.Printf("Insert returned %d.", id)
 			}
-
-			img := buddhabrot.Plot(plot)
 
 			if err := writeImage(w, img); err != nil {
 				log.Println("WriteImage failed:", err)

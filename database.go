@@ -2,8 +2,11 @@ package main
 
 import (
 	"database/sql"
+	"encoding/json"
+	"image"
 	"os"
 
+	"github.com/ebeeton/buddhabrot-go/parameters"
 	"github.com/go-sql-driver/mysql"
 )
 
@@ -31,15 +34,25 @@ func connect() (*sql.DB, error) {
 	return db, nil
 }
 
-func insert() (int64, error) {
+func insert(plot parameters.Plot, img *image.RGBA) (int64, error) {
 	var err error
+
+	// Get a JSON representation of the plot. This is a bit redundant given it
+	// came in that way, but the API validation requires a struct.
+	json, err := json.Marshal(plot)
+	if err != nil {
+		return 0, err
+	}
+
 	var db *sql.DB
 	db, err = connect()
 	if err != nil {
 		return 0, err
 	}
 
-	result, err := db.Exec("INSERT INTO plots (image) VALUES (?)", "Hello!")
+	// TODO:: Store the image data as a hex string?
+	result, err := db.Exec("INSERT INTO plots (plot) VALUES (?)",
+		string(json))
 	if err != nil {
 		return 0, err
 	}
