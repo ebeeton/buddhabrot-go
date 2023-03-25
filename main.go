@@ -3,7 +3,6 @@ package main
 import (
 	"bytes"
 	"encoding/json"
-	"image"
 	"image/png"
 	"log"
 	"net/http"
@@ -15,13 +14,14 @@ import (
 )
 
 func main() {
+	log.Println("Starting.")
+
 	// Register a validator for plot parameters.
 	validate := validator.New()
 	if err := validate.RegisterValidation("validateStops", parameters.ValidateStops); err != nil {
 		log.Fatal(err)
 	}
 
-	log.Println("Starting.")
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		switch r.Method {
 		case "POST":
@@ -39,16 +39,29 @@ func main() {
 				return
 			}
 
+			// Plot the image.
 			img := buddhabrot.Plot(plot)
 
+			// Encode a PNG.
+			buf := new(bytes.Buffer)
+			if err := png.Encode(buf, img); err != nil {
+				log.Fatal(err)
+			}
+
+			// Write the image to the local filesystem.
+			filename, err := writePng(buf.Bytes())
+			if err != nil {
+				log.Fatal(err)
+			}
+
 			// Persist the plot and parameters.
-			if id, err := insert(plot, img); err != nil {
-				log.Printf("Failed to connect to database: %v", err)
+			if id, err := insert(plot, filename); err != nil {
+				log.Fatal(err)
 			} else {
 				log.Printf("Insert returned %d.", id)
 			}
 
-			if err := writeImage(w, img); err != nil {
+			if err := writeResponse(w, buf); err != nil {
 				log.Println("WriteImage failed:", err)
 				w.WriteHeader(http.StatusInternalServerError)
 			}
@@ -60,12 +73,7 @@ func main() {
 	}
 }
 
-func writeImage(w http.ResponseWriter, img *image.RGBA) error {
-	buf := new(bytes.Buffer)
-
-	if err := png.Encode(buf, img); err != nil {
-		return err
-	}
+func writeResponse(w http.ResponseWriter, buf *bytes.Buffer) error {
 
 	w.Header().Set("Content-type", "image/png")
 	w.Header().Set("Content-length", strconv.Itoa(buf.Len()))
