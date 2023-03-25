@@ -10,6 +10,8 @@ services:
       - mysql
     environment:
       - MYSQL_ROOT_PASSWORD=${DB_ROOT_PASSWORD}
+    volumes:
+      - plots:/plots
 
   rabbitmq:
     image: rabbitmq:3.11-management
@@ -33,3 +35,4 @@ services:
 # https://stackoverflow.com/a/65348042
 volumes:
   mysql-data:
+  plots:

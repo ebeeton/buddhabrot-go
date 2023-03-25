@@ -3,7 +3,6 @@ package main
 import (
 	"database/sql"
 	"encoding/json"
-	"image"
 	"os"
 
 	"github.com/ebeeton/buddhabrot-go/parameters"
@@ -34,7 +33,7 @@ func connect() (*sql.DB, error) {
 	return db, nil
 }
 
-func insert(plot parameters.Plot, img *image.RGBA) (int64, error) {
+func insert(plot parameters.Plot, filename string) (int64, error) {
 	var err error
 
 	// Get a JSON representation of the plot. This is a bit redundant given it
@@ -50,9 +49,8 @@ func insert(plot parameters.Plot, img *image.RGBA) (int64, error) {
 		return 0, err
 	}
 
-	// TODO:: Store the image data as a hex string?
-	result, err := db.Exec("INSERT INTO plots (plot) VALUES (?)",
-		string(json))
+	result, err := db.Exec("INSERT INTO plots (plot, pngfile) VALUES (?, ?)",
+		string(json), filename)
 	if err != nil {
 		return 0, err
 	}
@@ -60,6 +58,5 @@ func insert(plot parameters.Plot, img *image.RGBA) (int64, error) {
 	if err != nil {
 		return 0, err
 	}
-
 	return id, nil
 }
