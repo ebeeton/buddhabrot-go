@@ -11,10 +11,11 @@ below.
 
 # Usage
 
-`go run .` starts an HTTP server on port 3000. The parameters used to plot the
-image are posted in JSON, and a PNG image is written to the response. If set to
-true, the `dumpCounterFile` property wil dump the orbit counts per pixel to a
-file called counter.txt in the log directory.
+In the root directory run `docker compose up --build`, which starts a web server
+on port 3000. The parameters used to plot the image are posted in JSON, and a
+PNG image is written to the response. If set to true, the `dumpCounterFile`
+property wil dump the orbit counts per pixel to a file called counter.txt in
+the log directory.
 
 ```json
 {
@@ -53,4 +54,12 @@ curl -Ss -d @params.json -H "Content-Type: application/json" \
     http://localhost:3000
 ```
 
-Note that the plotting is CPU intensive and blocks the request until complete.
+This is included in the samples directory in a file named request.sh along with
+the JSON file above, so to test the plotting you can run:
+
+```shell
+./request.sh > sample.png
+```
+
+Note that the plotting is CPU intensive and blocks the request until complete. I
+plan to use RabbitMQ as a work queue and perform the plotting asynchronously.

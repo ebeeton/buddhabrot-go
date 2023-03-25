@@ -3,7 +3,6 @@ package main
 import (
 	"bytes"
 	"encoding/json"
-	"image"
 	"image/png"
 	"log"
 	"net/http"
@@ -15,8 +14,14 @@ import (
 )
 
 func main() {
-	validate := validator.New()
 	log.Println("Starting.")
+
+	// Register a validator for plot parameters.
+	validate := validator.New()
+	if err := validate.RegisterValidation("validateStops", parameters.ValidateStops); err != nil {
+		log.Fatal(err)
+	}
+
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		switch r.Method {
 		case "POST":
@@ -25,21 +30,38 @@ func main() {
 			d.DisallowUnknownFields()
 			var plot parameters.Plot
 			if err := d.Decode(&plot); err != nil {
-				log.Println("Decode failed:", err)
+				log.Printf("Decode failed: %v", err)
 				w.WriteHeader(http.StatusInternalServerError)
 				return
-			}
-			if err := validate.RegisterValidation("validateStops", parameters.ValidateStops); err != nil {
-				log.Println("RegisterValidation failed: ", err.Error())
-				w.WriteHeader(http.StatusInternalServerError)
 			} else if err := validate.Struct(plot); err != nil {
-				log.Println("Plot parameter failed validation: ", err.Error())
+				log.Printf("Plot parameter failed validation: %v", err)
 				w.WriteHeader(http.StatusBadRequest)
+				return
 			}
 
+			// Plot the image.
 			img := buddhabrot.Plot(plot)
 
-			if err := writeImage(w, img); err != nil {
+			// Encode a PNG.
+			buf := new(bytes.Buffer)
+			if err := png.Encode(buf, img); err != nil {
+				log.Fatal(err)
+			}
+
+			// Write the image to the local filesystem.
+			filename, err := writePng(buf.Bytes())
+			if err != nil {
+				log.Fatal(err)
+			}
+
+			// Persist the plot and parameters.
+			if id, err := insert(plot, filename); err != nil {
+				log.Fatal(err)
+			} else {
+				log.Printf("Insert returned %d.", id)
+			}
+
+			if err := writeResponse(w, buf); err != nil {
 				log.Println("WriteImage failed:", err)
 				w.WriteHeader(http.StatusInternalServerError)
 			}
@@ -51,12 +73,7 @@ func main() {
 	}
 }
 
-func writeImage(w http.ResponseWriter, img *image.RGBA) error {
-	buf := new(bytes.Buffer)
-
-	if err := png.Encode(buf, img); err != nil {
-		return err
-	}
+func writeResponse(w http.ResponseWriter, buf *bytes.Buffer) error {
 
 	w.Header().Set("Content-type", "image/png")
 	w.Header().Set("Content-length", strconv.Itoa(buf.Len()))
