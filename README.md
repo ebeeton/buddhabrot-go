@@ -11,8 +11,11 @@ below.
 
 # Usage
 
-In the root directory run `docker compose up --build`, which starts a web server
-on port 3000. The parameters used to plot the image are posted in JSON, and a
+You'll need to the MySQL root password. Create a file in the root of the
+repository called `.env` and set the contents to `DB_ROOT_PASSWORD=yourchoice`.
+
+In the same directory run `docker compose up --build`, which starts a web server
+on port 3000. The parameters used to plot the image are posted as JSON, and a
 PNG image is written to the response. If set to true, the `dumpCounterFile`
 property wil dump the orbit counts per pixel to a file called counter.txt in
 the log directory.
