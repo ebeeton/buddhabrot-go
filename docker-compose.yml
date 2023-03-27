@@ -2,7 +2,8 @@ version: '3.8'
 
 services:
   buddhabrot:
-    build: .
+    build:
+      context: ./api
     ports:
       - "3000:3000"
     depends_on:
