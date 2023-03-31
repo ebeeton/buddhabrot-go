@@ -13,6 +13,11 @@ services:
       - MYSQL_ROOT_PASSWORD=${DB_ROOT_PASSWORD}
     volumes:
       - plots:/plots
+  plotter:
+    build:
+      context: ./plotter
+    depends_on:
+     - buddhabrot
 
   rabbitmq:
     image: rabbitmq:3.11-management
