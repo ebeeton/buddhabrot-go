@@ -10,6 +10,7 @@ import (
 
 	"github.com/ebeeton/buddhabrot-go/buddhabrot"
 	"github.com/ebeeton/buddhabrot-go/parameters"
+	"github.com/ebeeton/buddhabrot-go/queue"
 	"github.com/go-playground/validator/v10"
 )
 
@@ -38,6 +39,9 @@ func main() {
 				w.WriteHeader(http.StatusBadRequest)
 				return
 			}
+
+			// Enqueue a message for the plotter.
+			queue.Enqueue("Testing RabbitMQ. Plot requested.")
 
 			// Plot the image.
 			img := buddhabrot.Plot(plot)

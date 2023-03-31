@@ -1,7 +1,12 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+
+	"github.com/ebeeton/buddhabrot-go/plotter/queue"
+)
 
 func main() {
-	fmt.Println("Testing docker compose. I'm up.")
+	fmt.Println("Starting.")
+	queue.Dequeue()
 }
