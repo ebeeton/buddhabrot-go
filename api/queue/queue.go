@@ -48,7 +48,7 @@ func Enqueue(request string) {
 		})
 	failOnError(err, "Failed to publish the request.")
 
-	log.Printf("Sent %s.", request)
+	log.Printf("Sent: %s.", request)
 }
 
 func failOnError(err error, msg string) {

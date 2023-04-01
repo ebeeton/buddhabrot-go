@@ -1,12 +1,12 @@
 package main
 
 import (
-	"fmt"
+	"log"
 
 	"github.com/ebeeton/buddhabrot-go/plotter/queue"
 )
 
 func main() {
-	fmt.Println("Starting.")
+	log.Println("Starting.")
 	queue.Dequeue()
 }

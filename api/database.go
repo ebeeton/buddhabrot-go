@@ -2,10 +2,8 @@ package main
 
 import (
 	"database/sql"
-	"encoding/json"
 	"os"
 
-	"github.com/ebeeton/buddhabrot-go/parameters"
 	"github.com/go-sql-driver/mysql"
 )
 
@@ -33,15 +31,8 @@ func connect() (*sql.DB, error) {
 	return db, nil
 }
 
-func insert(plot parameters.Plot, filename string) (int64, error) {
+func insert(json string, filename string) (int64, error) {
 	var err error
-
-	// Get a JSON representation of the plot. This is a bit redundant given it
-	// came in that way, but the API validation requires a struct.
-	json, err := json.Marshal(plot)
-	if err != nil {
-		return 0, err
-	}
 
 	var db *sql.DB
 	db, err = connect()
@@ -50,7 +41,7 @@ func insert(plot parameters.Plot, filename string) (int64, error) {
 	}
 
 	result, err := db.Exec("INSERT INTO plots (plot, pngfile) VALUES (?, ?)",
-		string(json), filename)
+		json, filename)
 	if err != nil {
 		return 0, err
 	}

@@ -40,8 +40,16 @@ func main() {
 				return
 			}
 
-			// Enqueue a message for the plotter.
-			queue.Enqueue("Testing RabbitMQ. Plot requested.")
+			// Get a JSON representation of the plot. This is a bit redundant
+			// given it came in that way, but validation requires a struct.
+			b, err := json.Marshal(plot)
+			if err != nil {
+				log.Fatal(err)
+			}
+			json := string(b)
+
+			// Enqueue the plot.
+			queue.Enqueue(json)
 
 			// Plot the image.
 			img := buddhabrot.Plot(plot)
@@ -59,7 +67,7 @@ func main() {
 			}
 
 			// Persist the plot and parameters.
-			if id, err := insert(plot, filename); err != nil {
+			if id, err := insert(json, filename); err != nil {
 				log.Fatal(err)
 			} else {
 				log.Printf("Insert returned %d.", id)
