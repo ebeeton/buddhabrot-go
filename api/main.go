@@ -2,6 +2,7 @@ package main
 
 import (
 	"bytes"
+	"encoding/gob"
 	"encoding/json"
 	"image/png"
 	"log"
@@ -40,16 +41,13 @@ func main() {
 				return
 			}
 
-			// Get a JSON representation of the plot. This is a bit redundant
-			// given it came in that way, but validation requires a struct.
-			b, err := json.Marshal(plot)
-			if err != nil {
+			// Enqueue the plot.
+			req := new(bytes.Buffer)
+			enc := gob.NewEncoder(req)
+			if err := enc.Encode(plot); err != nil {
 				log.Fatal(err)
 			}
-			json := string(b)
-
-			// Enqueue the plot.
-			queue.Enqueue(json)
+			queue.Enqueue(req.Bytes())
 
 			// Plot the image.
 			img := buddhabrot.Plot(plot)
@@ -65,6 +63,14 @@ func main() {
 			if err != nil {
 				log.Fatal(err)
 			}
+
+			// Get a JSON representation of the plot. This is a bit redundant
+			// given it came in that way, but validation requires a struct.
+			b, err := json.Marshal(plot)
+			if err != nil {
+				log.Fatal(err)
+			}
+			json := string(b)
 
 			// Persist the plot and parameters.
 			if id, err := insert(json, filename); err != nil {

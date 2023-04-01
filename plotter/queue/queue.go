@@ -2,8 +2,11 @@
 package queue
 
 import (
+	"bytes"
+	"encoding/gob"
 	"log"
 
+	"github.com/ebeeton/buddhabrot-go/plotter/parameters"
 	amqp "github.com/rabbitmq/amqp091-go"
 )
 
@@ -43,7 +46,14 @@ func Dequeue() {
 
 	go func() {
 		for m := range msgs {
-			log.Printf("Received a message: %s", m.Body)
+			r := bytes.NewReader(m.Body)
+			dec := gob.NewDecoder(r)
+			var plot parameters.Plot
+			if err := dec.Decode(&plot); err != nil {
+				log.Fatal(err)
+			}
+
+			log.Printf("Received plot request: %v", plot)
 		}
 	}()
 

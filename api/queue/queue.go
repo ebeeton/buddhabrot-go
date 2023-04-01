@@ -14,7 +14,7 @@ const (
 )
 
 // Enqueue enqueues plot requests.
-func Enqueue(request string) {
+func Enqueue(request []byte) {
 	// TODO:: Make the hostname configurable.
 	conn, err := amqp.Dial("amqp://guest:guest@rabbitmq:5672/")
 	failOnError(err, "Failed to connect to RabbitMQ.")
@@ -44,7 +44,7 @@ func Enqueue(request string) {
 		false,  // immediate
 		amqp.Publishing{
 			ContentType: "text/plain",
-			Body:        []byte(request),
+			Body:        request,
 		})
 	failOnError(err, "Failed to publish the request.")
 
