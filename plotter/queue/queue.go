@@ -34,7 +34,7 @@ func Dequeue() {
 	msgs, err := ch.Consume(
 		q.Name, // queue
 		"",     // consumer
-		true,   // auto-ack
+		false,  // auto-ack
 		false,  // exclusive
 		false,  // no-local
 		false,  // no-wait
@@ -53,7 +53,14 @@ func Dequeue() {
 				log.Fatal(err)
 			}
 
+			// TODO:: Plot it.
 			log.Printf("Received plot request: %v", plot)
+
+			// Setting auto-ack to false requires the consumer to acknowledge
+			// that the message has been processed and can be deleted. There is
+			// a 30 minute default timeout for this. See:
+			// https://rabbitmq.com/consumers.html#acknowledgement-timeout
+			m.Ack(false)
 		}
 	}()
 

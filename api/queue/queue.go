@@ -43,8 +43,9 @@ func Enqueue(request []byte) {
 		false,  // mandatory
 		false,  // immediate
 		amqp.Publishing{
-			ContentType: "text/plain",
-			Body:        request,
+			DeliveryMode: amqp.Persistent,
+			ContentType:  "text/plain",
+			Body:         request,
 		})
 	failOnError(err, "Failed to publish the request.")
 
