@@ -10,8 +10,10 @@ import (
 	amqp "github.com/rabbitmq/amqp091-go"
 )
 
+type process func(parameters.Plot)
+
 // Dequeue dequeues plot requests.
-func Dequeue() {
+func Dequeue(p process) {
 	// TODO:: Make the hostname configurable.
 	conn, err := amqp.Dial("amqp://guest:guest@rabbitmq:5672/")
 	failOnError(err, "Failed to connect to RabbitMQ.")
@@ -52,15 +54,16 @@ func Dequeue() {
 			if err := dec.Decode(&plot); err != nil {
 				log.Fatal(err)
 			}
-
-			// TODO:: Plot it.
 			log.Printf("Received plot request: %v", plot)
+
+			p(plot)
 
 			// Setting auto-ack to false requires the consumer to acknowledge
 			// that the message has been processed and can be deleted. There is
 			// a 30 minute default timeout for this. See:
 			// https://rabbitmq.com/consumers.html#acknowledgement-timeout
 			m.Ack(false)
+			log.Println("Plot complete.")
 		}
 	}()
 

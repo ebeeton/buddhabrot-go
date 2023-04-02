@@ -4,12 +4,10 @@ import (
 	"bytes"
 	"encoding/gob"
 	"encoding/json"
-	"image/png"
 	"log"
 	"net/http"
 	"strconv"
 
-	"github.com/ebeeton/buddhabrot-go/buddhabrot"
 	"github.com/ebeeton/buddhabrot-go/parameters"
 	"github.com/ebeeton/buddhabrot-go/queue"
 	"github.com/go-playground/validator/v10"
@@ -48,42 +46,9 @@ func main() {
 				log.Fatal(err)
 			}
 			queue.Enqueue(req.Bytes())
+			log.Println("Request queued.")
 
-			// Plot the image.
-			img := buddhabrot.Plot(plot)
-
-			// Encode a PNG.
-			buf := new(bytes.Buffer)
-			if err := png.Encode(buf, img); err != nil {
-				log.Fatal(err)
-			}
-
-			// Write the image to the local filesystem.
-			filename, err := writePng(buf.Bytes())
-			if err != nil {
-				log.Fatal(err)
-			}
-
-			// Get a JSON representation of the plot. This is a bit redundant
-			// given it came in that way, but validation requires a struct.
-			b, err := json.Marshal(plot)
-			if err != nil {
-				log.Fatal(err)
-			}
-			json := string(b)
-
-			// Persist the plot and parameters.
-			if id, err := insert(json, filename); err != nil {
-				log.Fatal(err)
-			} else {
-				log.Printf("Insert returned %d.", id)
-			}
-
-			if err := writeResponse(w, buf); err != nil {
-				log.Println("WriteImage failed:", err)
-				w.WriteHeader(http.StatusInternalServerError)
-			}
-			log.Println("Request processed.")
+			w.WriteHeader(http.StatusCreated)
 		}
 	})
 	if err := http.ListenAndServe(":3000", nil); err != nil {

@@ -19,6 +19,10 @@ services:
       context: ./plotter
     depends_on:
       - buddhabrot
+    environment:
+      - MYSQL_ROOT_PASSWORD=${DB_ROOT_PASSWORD}
+    volumes:
+      - plots:/plots
 
   rabbitmq:
     image: rabbitmq:3.11-management
