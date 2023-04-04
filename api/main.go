@@ -6,7 +6,6 @@ import (
 	"encoding/json"
 	"log"
 	"net/http"
-	"strconv"
 
 	"github.com/ebeeton/buddhabrot-go/parameters"
 	"github.com/ebeeton/buddhabrot-go/queue"
@@ -39,7 +38,18 @@ func main() {
 				return
 			}
 
-			// Enqueue the plot.
+			// Create a record in the database so we have an ID to return to the
+			// caller.
+			b, err := json.Marshal(plot)
+			if err != nil {
+				log.Fatal(err)
+			}
+			id, err := insert(string(b))
+			if err != nil {
+				log.Fatal(err)
+			}
+
+			// Enqueue the plot request.
 			req := new(bytes.Buffer)
 			enc := gob.NewEncoder(req)
 			if err := enc.Encode(plot); err != nil {
@@ -49,20 +59,15 @@ func main() {
 			log.Println("Request queued.")
 
 			w.WriteHeader(http.StatusCreated)
+			r := struct {
+				Id int64
+			}{
+				Id: id,
+			}
+			json.NewEncoder(w).Encode(r)
 		}
 	})
 	if err := http.ListenAndServe(":3000", nil); err != nil {
 		log.Fatal(err)
 	}
-}
-
-func writeResponse(w http.ResponseWriter, buf *bytes.Buffer) error {
-
-	w.Header().Set("Content-type", "image/png")
-	w.Header().Set("Content-length", strconv.Itoa(buf.Len()))
-	if _, err := w.Write(buf.Bytes()); err != nil {
-		return err
-	}
-
-	return nil
 }
