@@ -2,15 +2,12 @@
 package queue
 
 import (
-	"bytes"
-	"encoding/gob"
 	"log"
 
-	"github.com/ebeeton/buddhabrot-go/plotter/parameters"
 	amqp "github.com/rabbitmq/amqp091-go"
 )
 
-type process func(parameters.Plot)
+type process func([]byte)
 
 // Dequeue dequeues plot requests.
 func Dequeue(p process) {
@@ -48,22 +45,13 @@ func Dequeue(p process) {
 
 	go func() {
 		for m := range msgs {
-			r := bytes.NewReader(m.Body)
-			dec := gob.NewDecoder(r)
-			var plot parameters.Plot
-			if err := dec.Decode(&plot); err != nil {
-				log.Fatal(err)
-			}
-			log.Printf("Received plot request: %v", plot)
-
-			p(plot)
+			p(m.Body)
 
 			// Setting auto-ack to false requires the consumer to acknowledge
 			// that the message has been processed and can be deleted. There is
 			// a 30 minute default timeout for this. See:
 			// https://rabbitmq.com/consumers.html#acknowledgement-timeout
 			m.Ack(false)
-			log.Println("Plot complete.")
 		}
 	}()
 

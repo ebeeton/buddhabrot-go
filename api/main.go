@@ -50,21 +50,20 @@ func main() {
 			}
 
 			// Enqueue the plot request.
-			req := new(bytes.Buffer)
-			enc := gob.NewEncoder(req)
-			if err := enc.Encode(plot); err != nil {
+			req := PlotRequest{
+				Id:   id,
+				Plot: plot,
+			}
+			buf := new(bytes.Buffer)
+			enc := gob.NewEncoder(buf)
+			if err := enc.Encode(req); err != nil {
 				log.Fatal(err)
 			}
-			queue.Enqueue(req.Bytes())
+			queue.Enqueue(buf.Bytes())
 			log.Println("Request queued.")
 
 			w.WriteHeader(http.StatusCreated)
-			r := struct {
-				Id int64
-			}{
-				Id: id,
-			}
-			json.NewEncoder(w).Encode(r)
+			json.NewEncoder(w).Encode(req)
 		}
 	})
 	if err := http.ListenAndServe(":3000", nil); err != nil {

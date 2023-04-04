@@ -30,24 +30,3 @@ func connect() (*sql.DB, error) {
 
 	return db, nil
 }
-
-func insert(json string, filename string) (int64, error) {
-	var err error
-
-	var db *sql.DB
-	db, err = connect()
-	if err != nil {
-		return 0, err
-	}
-
-	result, err := db.Exec("INSERT INTO plots (plot, pngfile) VALUES (?, ?)",
-		json, filename)
-	if err != nil {
-		return 0, err
-	}
-	id, err := result.LastInsertId()
-	if err != nil {
-		return 0, err
-	}
-	return id, nil
-}
