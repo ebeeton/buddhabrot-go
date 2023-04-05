@@ -2,6 +2,7 @@ package main
 
 import (
 	"database/sql"
+	"fmt"
 	"os"
 
 	"github.com/go-sql-driver/mysql"
@@ -29,4 +30,26 @@ func connect() (*sql.DB, error) {
 	}
 
 	return db, nil
+}
+
+func update(id int64, filename string) error {
+	var err error
+
+	var db *sql.DB
+	db, err = connect()
+	if err != nil {
+		return err
+	}
+
+	result, err := db.Exec("UPDATE plots SET pngfile = ? WHERE id = ?",
+		filename, id)
+	if err != nil {
+		return err
+	}
+	if rows, err := result.RowsAffected(); err != nil {
+		return err
+	} else if rows != 1 {
+		return fmt.Errorf("update affected %d rows", rows)
+	}
+	return nil
 }

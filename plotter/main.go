@@ -31,11 +31,14 @@ func main() {
 		}
 
 		// Write the image to the local filesystem.
-		_, err := writePng(buf.Bytes())
+		filename, err := writePng(buf.Bytes())
 		if err != nil {
 			log.Fatal(err)
 		}
 
-		// TODO:: Update the database with the filename.
+		// Update the DB record with the filename.
+		if err := update(req.Id, filename); err != nil {
+			log.Fatal(err)
+		}
 	})
 }
