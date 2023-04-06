@@ -83,6 +83,11 @@ func getImage(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
 		log.Fatal(err)
 	} else if filename, err := getFilename(id); err != nil {
 		log.Fatal(err)
+	} else if filename == "" {
+		// This is not an error condition. A plot has been requested but hasn't
+		// completed yet.
+		w.WriteHeader(http.StatusNotFound)
+		log.Printf("Image ID %d hasn't completed yet.", id)
 	} else if b, err := readPng(filename); err != nil {
 		log.Fatal(err)
 	} else {
@@ -91,5 +96,6 @@ func getImage(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
 		if _, err := w.Write(b); err != nil {
 			log.Fatal(err)
 		}
+		log.Printf("Returned image ID %d successfully.", id)
 	}
 }
