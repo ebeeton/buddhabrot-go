@@ -50,3 +50,19 @@ func insert(json string) (int64, error) {
 	}
 	return id, nil
 }
+
+func getFilename(id int64) (string, error) {
+	var db *sql.DB
+	db, err := connect()
+	if err != nil {
+		return "", err
+	}
+
+	var filename string
+	row := db.QueryRow("SELECT pngfile FROM plots WHERE id = ?", id)
+	if row.Scan(&filename); err != nil {
+		return "", err
+	}
+
+	return filename, nil
+}

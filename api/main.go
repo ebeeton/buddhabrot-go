@@ -6,6 +6,7 @@ import (
 	"encoding/json"
 	"log"
 	"net/http"
+	"strconv"
 
 	"github.com/ebeeton/buddhabrot-go/parameters"
 	"github.com/ebeeton/buddhabrot-go/queue"
@@ -25,7 +26,8 @@ func main() {
 	}
 
 	router := httprouter.New()
-	router.POST("/", plotRequest)
+	router.POST("/api/plots", plotRequest)
+	router.GET("/api/plots/:id", getImage)
 
 	if err := http.ListenAndServe(":3000", router); err != nil {
 		log.Fatal(err)
@@ -73,4 +75,21 @@ func plotRequest(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 
 	w.WriteHeader(http.StatusCreated)
 	json.NewEncoder(w).Encode(req)
+}
+
+func getImage(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
+	i := p.ByName("id")
+	if id, err := strconv.ParseInt(i, 10, 64); err != nil {
+		log.Fatal(err)
+	} else if filename, err := getFilename(id); err != nil {
+		log.Fatal(err)
+	} else if b, err := readPng(filename); err != nil {
+		log.Fatal(err)
+	} else {
+		w.Header().Set("Content-type", "image/png")
+		w.Header().Set("Content-length", strconv.Itoa(len(b)))
+		if _, err := w.Write(b); err != nil {
+			log.Fatal(err)
+		}
+	}
 }
