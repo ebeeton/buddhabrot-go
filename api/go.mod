@@ -9,6 +9,8 @@ require (
 
 require github.com/rabbitmq/amqp091-go v1.7.0
 
+require github.com/julienschmidt/httprouter v1.3.0 // indirect
+
 require (
 	github.com/ebeeton/gradient v0.0.1
 	github.com/go-playground/locales v0.14.0 // indirect
