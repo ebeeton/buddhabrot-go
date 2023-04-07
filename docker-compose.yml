@@ -7,8 +7,18 @@ services:
     ports:
       - "3000:3000"
     depends_on:
-      - rabbitmq
-      - mysql
+      rabbitmq:
+        condition: service_healthy
+    environment:
+      - MYSQL_ROOT_PASSWORD=${DB_ROOT_PASSWORD}
+    volumes:
+      - plots:/plots
+
+  plotter:
+    build:
+      context: ./plotter
+    depends_on:
+      - buddhabrot
     environment:
       - MYSQL_ROOT_PASSWORD=${DB_ROOT_PASSWORD}
     volumes:
@@ -19,6 +29,11 @@ services:
     ports:
       - "5672:5672"
       - "15672:15672"
+    healthcheck:
+      test: rabbitmq-diagnostics -q ping
+      interval: 15s
+      timeout: 30s
+      retries: 3
 
   # Hat tip to https://cimentadaj.github.io/blog/2020-11-25-deploying-mysql-database-using-docker/deploying-mysql-database-using-docker/
   mysql:

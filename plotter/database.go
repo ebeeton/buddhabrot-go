@@ -2,6 +2,7 @@ package main
 
 import (
 	"database/sql"
+	"fmt"
 	"os"
 
 	"github.com/go-sql-driver/mysql"
@@ -31,38 +32,24 @@ func connect() (*sql.DB, error) {
 	return db, nil
 }
 
-func insert(json string) (int64, error) {
+func update(id int64, filename string) error {
 	var err error
 
 	var db *sql.DB
 	db, err = connect()
 	if err != nil {
-		return 0, err
+		return err
 	}
 
-	result, err := db.Exec("INSERT INTO plots (plot) VALUES (?)", json)
+	result, err := db.Exec("UPDATE plots SET pngfile = ? WHERE id = ?",
+		filename, id)
 	if err != nil {
-		return 0, err
+		return err
 	}
-	id, err := result.LastInsertId()
-	if err != nil {
-		return 0, err
+	if rows, err := result.RowsAffected(); err != nil {
+		return err
+	} else if rows != 1 {
+		return fmt.Errorf("update affected %d rows", rows)
 	}
-	return id, nil
-}
-
-func getFilename(id int64) (string, error) {
-	var db *sql.DB
-	db, err := connect()
-	if err != nil {
-		return "", err
-	}
-
-	var filename string
-	row := db.QueryRow("SELECT pngfile FROM plots WHERE id = ?", id)
-	if row.Scan(&filename); err != nil {
-		return "", err
-	}
-
-	return filename, nil
+	return nil
 }
