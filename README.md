@@ -9,16 +9,29 @@ A Buddhabrot plotter written as a Go learning exercise.
 This plot took about eight minutes on an eight-core machine using the parameters
 below.
 
-# Usage
+## Usage
+
+### Set the MySql Password
 
 You'll need to the MySQL root password. Create a file in the root of the
 repository called `.env` and set the contents to `DB_ROOT_PASSWORD=yourchoice`.
 
-In the same directory run `docker compose up --build`, which starts a web server
-on port 3000. The parameters used to plot the image are posted as JSON, and a
-PNG image is written to the response. If set to true, the `dumpCounterFile`
-property wil dump the orbit counts per pixel to a file called counter.txt in
-the log directory.
+### Run It
+
+In the same directory run `docker compose up --build`, which starts the API on
+`http://localhost:3000`. After all the containers are running you can request a
+plot.
+
+### Request a Plot
+
+The parameters used to plot the image are posted in JSON by clients 
+to '/api/plots', and the API records them in the database. The row ID and 
+parameters are returned with HTTP status 201. The ID will be used to obtain a
+PNG image of the plot after it is complete. Because the plotting is CPU
+intensive, RabbitMQ is used to enqueue the plot request for a separate plotter
+process so the API request doesn't block.
+
+A sample plot request:
 
 ```json
 {
@@ -54,15 +67,32 @@ If put in a file called params.json, it could be posted with:
 
 ```shell
 curl -Ss -d @params.json -H "Content-Type: application/json" \
-    http://localhost:3000
+    http://localhost:3000/api/plots
 ```
 
-This is included in the samples directory in a file named request.sh along with
-the JSON file above, so to test the plotting you can run:
+This is included in the samples directory in a file named plotrequest.sh along
+with the JSON file above, so to test the plotting you can run:
 
 ```shell
-./request.sh > sample.png
+./request.sh
 ```
 
-Note that the plotting is CPU intensive and blocks the request until complete. I
-plan to use RabbitMQ as a work queue and perform the plotting asynchronously.
+You will get a response similiar to this; note the `Id` property.
+
+```json
+{
+    "Id": 25,
+    "Plot": {
+        "SampleSize": 10000000,
+    ...
+```
+
+### Getting Images
+
+Given the `Id` from the previous step, you can do a get to `/api/plots/25'`. If
+the plotter process has completed the plot, this will return a PNG image.
+Otherwise 404 is returned until the plot is complete. To do this with curl:
+
+```shell
+curl -Ss "http://localhost:3000/api/plots/25 > image.png
+```
