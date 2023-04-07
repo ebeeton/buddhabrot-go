@@ -96,3 +96,9 @@ Otherwise 404 is returned until the plot is complete. To do this with curl:
 ```shell
 curl -Ss "http://localhost:3000/api/plots/25 > image.png
 ```
+
+A script for this is also included in the samples directory and can be run as:
+
+```shell
+./getimage.sh 25 > image.png
+```
