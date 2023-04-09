@@ -11,7 +11,7 @@ import (
 )
 
 func main() {
-	log.Println("Starting.")
+	log.Println("Plotter starting.")
 	queue.Dequeue(func(body []byte) {
 		r := bytes.NewReader(body)
 		dec := gob.NewDecoder(r)
