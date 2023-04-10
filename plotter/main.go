@@ -7,15 +7,17 @@ import (
 	"log"
 
 	"github.com/ebeeton/buddhabrot-go/plotter/buddhabrot"
-	"github.com/ebeeton/buddhabrot-go/plotter/queue"
+	"github.com/ebeeton/buddhabrot-go/shared/database"
+	"github.com/ebeeton/buddhabrot-go/shared/parameters"
+	"github.com/ebeeton/buddhabrot-go/shared/queue"
 )
 
 func main() {
-	log.Println("Starting.")
+	log.Println("Plotter starting.")
 	queue.Dequeue(func(body []byte) {
 		r := bytes.NewReader(body)
 		dec := gob.NewDecoder(r)
-		var req PlotRequest
+		var req parameters.PlotRequest
 		if err := dec.Decode(&req); err != nil {
 			log.Fatal(err)
 		}
@@ -37,7 +39,7 @@ func main() {
 		}
 
 		// Update the DB record with the filename.
-		if err := update(req.Id, filename); err != nil {
+		if err := database.Update(req.Id, filename); err != nil {
 			log.Fatal(err)
 		}
 	})

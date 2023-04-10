@@ -3,7 +3,8 @@ version: '3.8'
 services:
   buddhabrot:
     build:
-      context: ./api
+      context: .
+      dockerfile: ./api/Dockerfile
     ports:
       - "3000:3000"
     depends_on:
@@ -16,7 +17,8 @@ services:
 
   plotter:
     build:
-      context: ./plotter
+      context: .
+      dockerfile: ./plotter/Dockerfile
     depends_on:
       - buddhabrot
     environment:

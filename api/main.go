@@ -8,8 +8,9 @@ import (
 	"net/http"
 	"strconv"
 
-	"github.com/ebeeton/buddhabrot-go/parameters"
-	"github.com/ebeeton/buddhabrot-go/queue"
+	"github.com/ebeeton/buddhabrot-go/shared/database"
+	"github.com/ebeeton/buddhabrot-go/shared/parameters"
+	"github.com/ebeeton/buddhabrot-go/shared/queue"
 	"github.com/go-playground/validator/v10"
 	"github.com/julienschmidt/httprouter"
 )
@@ -17,11 +18,11 @@ import (
 var validate *validator.Validate
 
 func main() {
-	log.Println("Starting.")
+	log.Println("API starting.")
 
 	// Register a validator for plot parameters.
 	validate = validator.New()
-	if err := validate.RegisterValidation("validateStops", parameters.ValidateStops); err != nil {
+	if err := validate.RegisterValidation("validateStops", ValidateStops); err != nil {
 		log.Fatal(err)
 	}
 
@@ -55,13 +56,13 @@ func plotRequest(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	if err != nil {
 		log.Fatal(err)
 	}
-	id, err := insert(string(b))
+	id, err := database.Insert(string(b))
 	if err != nil {
 		log.Fatal(err)
 	}
 
 	// Enqueue the plot request.
-	req := PlotRequest{
+	req := parameters.PlotRequest{
 		Id:   id,
 		Plot: plot,
 	}
@@ -81,7 +82,7 @@ func getImage(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
 	i := p.ByName("id")
 	if id, err := strconv.ParseInt(i, 10, 64); err != nil {
 		log.Fatal(err)
-	} else if filename, err := getFilename(id); err != nil {
+	} else if filename, err := database.GetFilename(id); err != nil {
 		log.Fatal(err)
 	} else if filename == "" {
 		// This is not an error condition. A plot has been requested but hasn't
@@ -98,4 +99,19 @@ func getImage(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
 		}
 		log.Printf("Returned image ID %d successfully.", id)
 	}
+}
+
+// ValidateStops validates that the state of a slice of Stops.
+func ValidateStops(fl validator.FieldLevel) bool {
+	// TODO:: How do you add specific error messages?
+	stops := fl.Field().Interface().([]parameters.Stop)
+	if len(stops) < 2 {
+		return false
+	} else if stops[0].Position != 0 {
+		return false
+	} else if stops[len(stops)-1].Position != 1 {
+		return false
+	}
+
+	return true
 }

@@ -14,8 +14,8 @@ import (
 	"sync"
 	"sync/atomic"
 
-	"github.com/ebeeton/buddhabrot-go/plotter/parameters"
 	"github.com/ebeeton/buddhabrot-go/plotter/timer"
+	"github.com/ebeeton/buddhabrot-go/shared/parameters"
 	"github.com/ebeeton/gradient"
 )
 
