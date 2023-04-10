@@ -7,7 +7,7 @@ import (
 	"log"
 
 	"github.com/ebeeton/buddhabrot-go/plotter/buddhabrot"
-	"github.com/ebeeton/buddhabrot-go/plotter/queue"
+	"github.com/ebeeton/buddhabrot-go/shared/queue"
 )
 
 func main() {

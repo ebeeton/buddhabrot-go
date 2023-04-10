@@ -9,8 +9,7 @@ import (
 	"strconv"
 
 	"github.com/ebeeton/buddhabrot-go/parameters"
-	"github.com/ebeeton/buddhabrot-go/queue"
-	"github.com/ebeeton/buddhabrot-go/shared"
+	"github.com/ebeeton/buddhabrot-go/shared/queue"
 	"github.com/go-playground/validator/v10"
 	"github.com/julienschmidt/httprouter"
 )
@@ -19,7 +18,6 @@ var validate *validator.Validate
 
 func main() {
 	log.Println("API starting.")
-	shared.Test()
 
 	// Register a validator for plot parameters.
 	validate = validator.New()
