@@ -6,7 +6,7 @@ import (
 	"math"
 	"testing"
 
-	"github.com/ebeeton/buddhabrot-go/plotter/parameters"
+	"github.com/ebeeton/buddhabrot-go/shared/parameters"
 )
 
 func TestPlot(t *testing.T) {

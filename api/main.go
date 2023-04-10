@@ -8,8 +8,8 @@ import (
 	"net/http"
 	"strconv"
 
-	"github.com/ebeeton/buddhabrot-go/parameters"
 	"github.com/ebeeton/buddhabrot-go/shared/database"
+	"github.com/ebeeton/buddhabrot-go/shared/parameters"
 	"github.com/ebeeton/buddhabrot-go/shared/queue"
 	"github.com/go-playground/validator/v10"
 	"github.com/julienschmidt/httprouter"
@@ -22,7 +22,7 @@ func main() {
 
 	// Register a validator for plot parameters.
 	validate = validator.New()
-	if err := validate.RegisterValidation("validateStops", parameters.ValidateStops); err != nil {
+	if err := validate.RegisterValidation("validateStops", ValidateStops); err != nil {
 		log.Fatal(err)
 	}
 
@@ -62,7 +62,7 @@ func plotRequest(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	}
 
 	// Enqueue the plot request.
-	req := PlotRequest{
+	req := parameters.PlotRequest{
 		Id:   id,
 		Plot: plot,
 	}
@@ -99,4 +99,19 @@ func getImage(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
 		}
 		log.Printf("Returned image ID %d successfully.", id)
 	}
+}
+
+// ValidateStops validates that the state of a slice of Stops.
+func ValidateStops(fl validator.FieldLevel) bool {
+	// TODO:: How do you add specific error messages?
+	stops := fl.Field().Interface().([]parameters.Stop)
+	if len(stops) < 2 {
+		return false
+	} else if stops[0].Position != 0 {
+		return false
+	} else if stops[len(stops)-1].Position != 1 {
+		return false
+	}
+
+	return true
 }

@@ -8,6 +8,7 @@ import (
 
 	"github.com/ebeeton/buddhabrot-go/plotter/buddhabrot"
 	"github.com/ebeeton/buddhabrot-go/shared/database"
+	"github.com/ebeeton/buddhabrot-go/shared/parameters"
 	"github.com/ebeeton/buddhabrot-go/shared/queue"
 )
 
@@ -16,7 +17,7 @@ func main() {
 	queue.Dequeue(func(body []byte) {
 		r := bytes.NewReader(body)
 		dec := gob.NewDecoder(r)
-		var req PlotRequest
+		var req parameters.PlotRequest
 		if err := dec.Decode(&req); err != nil {
 			log.Fatal(err)
 		}
