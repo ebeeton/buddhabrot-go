@@ -9,6 +9,7 @@ import (
 	"strconv"
 
 	"github.com/ebeeton/buddhabrot-go/parameters"
+	"github.com/ebeeton/buddhabrot-go/shared/database"
 	"github.com/ebeeton/buddhabrot-go/shared/queue"
 	"github.com/go-playground/validator/v10"
 	"github.com/julienschmidt/httprouter"
@@ -55,7 +56,7 @@ func plotRequest(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	if err != nil {
 		log.Fatal(err)
 	}
-	id, err := insert(string(b))
+	id, err := database.Insert(string(b))
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -81,7 +82,7 @@ func getImage(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
 	i := p.ByName("id")
 	if id, err := strconv.ParseInt(i, 10, 64); err != nil {
 		log.Fatal(err)
-	} else if filename, err := getFilename(id); err != nil {
+	} else if filename, err := database.GetFilename(id); err != nil {
 		log.Fatal(err)
 	} else if filename == "" {
 		// This is not an error condition. A plot has been requested but hasn't

@@ -7,6 +7,7 @@ import (
 	"log"
 
 	"github.com/ebeeton/buddhabrot-go/plotter/buddhabrot"
+	"github.com/ebeeton/buddhabrot-go/shared/database"
 	"github.com/ebeeton/buddhabrot-go/shared/queue"
 )
 
@@ -37,7 +38,7 @@ func main() {
 		}
 
 		// Update the DB record with the filename.
-		if err := update(req.Id, filename); err != nil {
+		if err := database.Update(req.Id, filename); err != nil {
 			log.Fatal(err)
 		}
 	})
