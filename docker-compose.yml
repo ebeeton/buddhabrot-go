@@ -1,7 +1,7 @@
 version: '3.8'
 
 services:
-  buddhabrot:
+  api:
     build:
       context: .
       dockerfile: ./api/Dockerfile
@@ -20,7 +20,7 @@ services:
       context: .
       dockerfile: ./plotter/Dockerfile
     depends_on:
-      - buddhabrot
+      - api
     environment:
       - MYSQL_ROOT_PASSWORD=${DB_ROOT_PASSWORD}
     volumes:

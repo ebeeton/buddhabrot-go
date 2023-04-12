@@ -12,4 +12,4 @@ FROM alpine:3.17
 
 COPY --from=build /usr/src/app/api /usr/local/bin/
 
-CMD [ "buddhabrot-go" ]
+CMD [ "api" ]
