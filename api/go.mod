@@ -1,4 +1,4 @@
-module github.com/ebeeton/buddhabrot-go
+module github.com/ebeeton/buddhabrot-go/api
 
 go 1.20
 
