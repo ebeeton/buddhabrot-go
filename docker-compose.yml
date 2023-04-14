@@ -10,6 +10,8 @@ services:
     depends_on:
       rabbitmq:
         condition: service_healthy
+      mysql:
+        condition: service_healthy
     environment:
       - MYSQL_ROOT_PASSWORD=${DB_ROOT_PASSWORD}
     volumes:
@@ -48,6 +50,9 @@ services:
       - ./mysql/sql:/docker-entrypoint-initdb.d
       - mysql-data:/var/lib/mysql
       - ./mysql/conf:/etc/mysql/conf.d
+    healthcheck:
+    # https://stackoverflow.com/a/51641089/2382333
+      test: /usr/bin/mysql --user=root --password=$DB_ROOT_PASSWORD --execute "SHOW DATABASES;"
 
 # https://github.com/docker-library/mysql/issues/302
 # https://stackoverflow.com/a/65348042
