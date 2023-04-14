@@ -6,6 +6,7 @@ import (
 	"encoding/json"
 	"log"
 	"net/http"
+	"net/url"
 	"strconv"
 
 	"github.com/ebeeton/buddhabrot-go/shared/database"
@@ -74,6 +75,13 @@ func plotRequest(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	queue.Enqueue(buf.Bytes())
 	log.Println("Request queued.")
 
+	// Set the response location header with the ID.
+	ids := strconv.FormatInt(id, 10)
+	if l, err := url.JoinPath(r.URL.String(), ids); err != nil {
+		log.Fatal(err)
+	} else {
+		w.Header().Add("Location", l)
+	}
 	w.WriteHeader(http.StatusCreated)
 	json.NewEncoder(w).Encode(req)
 }
