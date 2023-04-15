@@ -10,6 +10,7 @@ import (
 	"strconv"
 
 	"github.com/ebeeton/buddhabrot-go/shared/database"
+	"github.com/ebeeton/buddhabrot-go/shared/files"
 	"github.com/ebeeton/buddhabrot-go/shared/parameters"
 	"github.com/ebeeton/buddhabrot-go/shared/queue"
 	"github.com/go-playground/validator/v10"
@@ -97,7 +98,7 @@ func getImage(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
 		// completed yet.
 		w.WriteHeader(http.StatusNotFound)
 		log.Printf("Image ID %d hasn't completed yet.", id)
-	} else if b, err := readPng(filename); err != nil {
+	} else if b, err := files.Read(filename); err != nil {
 		log.Fatal(err)
 	} else {
 		w.Header().Set("Content-type", "image/png")
