@@ -8,6 +8,7 @@ import (
 
 	"github.com/ebeeton/buddhabrot-go/plotter/buddhabrot"
 	"github.com/ebeeton/buddhabrot-go/shared/database"
+	"github.com/ebeeton/buddhabrot-go/shared/files"
 	"github.com/ebeeton/buddhabrot-go/shared/parameters"
 	"github.com/ebeeton/buddhabrot-go/shared/queue"
 )
@@ -33,7 +34,7 @@ func main() {
 		}
 
 		// Write the image to the local filesystem.
-		filename, err := writePng(buf.Bytes())
+		filename, err := files.Write(buf.Bytes())
 		if err != nil {
 			log.Fatal(err)
 		}
