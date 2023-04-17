@@ -84,7 +84,14 @@ func plotRequest(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 		w.Header().Add("Location", l)
 	}
 	w.WriteHeader(http.StatusCreated)
-	json.NewEncoder(w).Encode(req)
+
+	// Write the ID to the response.
+	resp := struct {
+		Id int64
+	}{
+		Id: id,
+	}
+	json.NewEncoder(w).Encode(resp)
 }
 
 func getImage(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
