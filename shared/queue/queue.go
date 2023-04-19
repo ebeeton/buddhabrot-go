@@ -13,7 +13,7 @@ const (
 	timeout = 5 * time.Second
 )
 
-type process func([]byte)
+type process func([]byte) error
 
 // Enqueue enqueues plot requests.
 func Enqueue(request []byte) {
@@ -89,13 +89,18 @@ func Dequeue(p process) {
 
 	go func() {
 		for m := range msgs {
-			p(m.Body)
+			// Can't use recover here because of SA9001.
+			if err := p(m.Body); err != nil {
+				log.Printf("Plot failed: %v", err)
+				continue
+			}
 
 			// Setting auto-ack to false requires the consumer to acknowledge
 			// that the message has been processed and can be deleted. There is
 			// a 30 minute default timeout for this. See:
 			// https://rabbitmq.com/consumers.html#acknowledgement-timeout
 			m.Ack(false)
+			log.Printf("Ack sent.")
 		}
 	}()
 
