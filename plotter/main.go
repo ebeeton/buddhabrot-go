@@ -3,6 +3,7 @@ package main
 import (
 	"bytes"
 	"encoding/gob"
+	"errors"
 	"image/png"
 	"log"
 
@@ -15,14 +16,26 @@ import (
 
 func main() {
 	log.Println("Plotter starting.")
-	queue.Dequeue(func(body []byte) {
+	queue.Dequeue(func(body []byte) (err error) {
+		defer func() {
+			// https://stackoverflow.com/a/25638915/2382333
+			if r := recover(); r != nil {
+				log.Printf("Recovered: %v", r)
+				switch t := r.(type) {
+				case error:
+					err = t
+				default:
+					err = errors.New("unknown panic")
+				}
+			}
+		}()
 		r := bytes.NewReader(body)
 		dec := gob.NewDecoder(r)
 		var req parameters.PlotRequest
 		if err := dec.Decode(&req); err != nil {
-			log.Fatal(err)
+			return err
 		}
-		log.Printf("Received plot request: %v", req)
+		log.Printf("Processing plot request: %v", req)
 
 		// Plot the image.
 		img := buddhabrot.Plot(req.Plot)
@@ -30,18 +43,20 @@ func main() {
 		// Encode a PNG.
 		buf := new(bytes.Buffer)
 		if err := png.Encode(buf, img); err != nil {
-			log.Fatal(err)
+			return err
 		}
 
 		// Write the image to the local filesystem.
 		filename, err := files.Write(buf.Bytes())
 		if err != nil {
-			log.Fatal(err)
+			return err
 		}
 
 		// Update the DB record with the filename.
 		if err := database.Update(req.Id, filename); err != nil {
-			log.Fatal(err)
+			return err
 		}
+
+		return nil
 	})
 }
