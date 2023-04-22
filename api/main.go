@@ -7,6 +7,7 @@ import (
 	"log"
 	"net/http"
 	"net/url"
+	"runtime/debug"
 	"strconv"
 
 	"github.com/ebeeton/buddhabrot-go/shared/database"
@@ -31,10 +32,17 @@ func main() {
 	router := httprouter.New()
 	router.POST("/api/plots", plotRequest)
 	router.GET("/api/plots/:id", getImage)
+	router.PanicHandler = handlePanic
 
 	if err := http.ListenAndServe(":3000", router); err != nil {
 		log.Fatal(err)
 	}
+}
+
+func handlePanic(w http.ResponseWriter, r *http.Request, err interface{}) {
+	log.Println(r.URL.Path, err)
+	debug.PrintStack()
+	w.WriteHeader(http.StatusInternalServerError)
 }
 
 func plotRequest(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
@@ -43,9 +51,7 @@ func plotRequest(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	d.DisallowUnknownFields()
 	var plot parameters.Plot
 	if err := d.Decode(&plot); err != nil {
-		log.Printf("Decode failed: %v", err)
-		w.WriteHeader(http.StatusInternalServerError)
-		return
+		log.Panic(err)
 	} else if err := validate.Struct(plot); err != nil {
 		log.Printf("Plot parameter failed validation: %v", err)
 		w.WriteHeader(http.StatusBadRequest)
@@ -56,11 +62,11 @@ func plotRequest(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	// caller.
 	b, err := json.Marshal(plot)
 	if err != nil {
-		log.Fatal(err)
+		log.Panic(err)
 	}
 	id, err := database.Insert(string(b))
 	if err != nil {
-		log.Fatal(err)
+		log.Panic(err)
 	}
 
 	// Enqueue the plot request.
@@ -71,7 +77,7 @@ func plotRequest(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	buf := new(bytes.Buffer)
 	enc := gob.NewEncoder(buf)
 	if err := enc.Encode(req); err != nil {
-		log.Fatal(err)
+		log.Panic(err)
 	}
 	queue.Enqueue(buf.Bytes())
 	log.Println("Request queued.")
@@ -79,7 +85,7 @@ func plotRequest(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	// Set the response location header with the ID.
 	ids := strconv.FormatInt(id, 10)
 	if l, err := url.JoinPath(r.URL.String(), ids); err != nil {
-		log.Fatal(err)
+		log.Panic(err)
 	} else {
 		w.Header().Add("Location", l)
 	}
@@ -97,21 +103,21 @@ func plotRequest(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 func getImage(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
 	i := p.ByName("id")
 	if id, err := strconv.ParseInt(i, 10, 64); err != nil {
-		log.Fatal(err)
+		log.Panic(err)
 	} else if filename, err := database.GetFilename(id); err != nil {
-		log.Fatal(err)
+		log.Panic(err)
 	} else if filename == "" {
 		// This is not an error condition. A plot has been requested but hasn't
 		// completed yet.
 		w.WriteHeader(http.StatusNotFound)
 		log.Printf("Image ID %d hasn't completed yet.", id)
 	} else if b, err := files.Read(filename); err != nil {
-		log.Fatal(err)
+		log.Panic(err)
 	} else {
 		w.Header().Set("Content-type", "image/png")
 		w.Header().Set("Content-length", strconv.Itoa(len(b)))
 		if _, err := w.Write(b); err != nil {
-			log.Fatal(err)
+			log.Panic(err)
 		}
 		log.Printf("Returned image ID %d successfully.", id)
 	}
