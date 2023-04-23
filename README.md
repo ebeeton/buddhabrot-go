@@ -102,3 +102,25 @@ A script for this is also included in the samples directory and can be run as:
 ```shell
 ./getimage.sh 25 > image.png
 ```
+
+### Parameters
+
+For a thorough explanation of the Buddhabrot
+[see Wikipedia's page here](https://en.wikipedia.org/wiki/Buddhabrot).
+
+| Parameter | Description |
+| --- | --- |
+| `sampleSize` | The number of random sample points not in the Mandelbrot set. |
+| `maxIterations` | The maximum number of orbits per point.
+| `region` | Defines the complex plane region points are sampled from. |
+| - `minReal` | Minimum real component for each point. |
+| - `maxReal` | Maximum real component for each point. |
+| - `minImag` | Minimum imaginary component for each point. |
+| - `maxImag` | Maximum imaginary component for each point. |
+| `width` | Width of plot image in pixels. |
+| `height` | Height of plot image in pixels. |
+| `gradient` | Array of "stops" which are used to color the plot. |
+| - `color` | Hex color of the stop. |
+| - `position` | Position of the stop in [0, 1]. |
+| `dumpCounterFile` | If `true`, dump the orbit counts per pixel to a file called counter.txt in the log directory. |
+
