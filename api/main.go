@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/gob"
 	"encoding/json"
+	"errors"
 	"log"
 	"net/http"
 	"net/url"
@@ -32,6 +33,7 @@ func main() {
 	router := httprouter.New()
 	router.POST("/api/plots", plotRequest)
 	router.GET("/api/plots/:id", getImage)
+	router.GET("/api/version", getVersion)
 	router.PanicHandler = handlePanic
 
 	if err := http.ListenAndServe(":3000", router); err != nil {
@@ -136,4 +138,18 @@ func ValidateStops(fl validator.FieldLevel) bool {
 	}
 
 	return true
+}
+
+func getVersion(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
+	bi, ok := debug.ReadBuildInfo()
+	if !ok {
+		log.Panic(errors.New("could not get build info"))
+	}
+
+	resp := struct {
+		Version string
+	}{
+		Version: bi.Main.Version,
+	}
+	json.NewEncoder(w).Encode(resp)
 }
