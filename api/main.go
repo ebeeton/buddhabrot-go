@@ -32,6 +32,7 @@ func main() {
 	router := httprouter.New()
 	router.POST("/api/plots", plotRequest)
 	router.GET("/api/plots/:id", getImage)
+	router.GET("/api/healthcheck", healthcheck)
 	router.PanicHandler = handlePanic
 
 	if err := http.ListenAndServe(":3000", router); err != nil {
@@ -136,4 +137,13 @@ func ValidateStops(fl validator.FieldLevel) bool {
 	}
 
 	return true
+}
+
+func healthcheck(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
+	resp := struct {
+		Status string
+	}{
+		Status: "OK",
+	}
+	json.NewEncoder(w).Encode(resp)
 }
