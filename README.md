@@ -6,7 +6,7 @@ A Buddhabrot plotter written as a Go learning exercise.
 
 ![Buddhabrot image](/samples/sample.png)
 
-This plot took about eight minutes on an eight-core machine using the parameters
+This plot took about a minute on an eight-core machine using the parameters
 below.
 
 ## Usage
@@ -35,16 +35,16 @@ A sample plot request:
 
 ```json
 {
-    "sampleSize":1000000000,
+    "sampleSize":100000000,
     "maxIterations":5000,
     "region": {
         "minReal":-2.0,
-        "maxReal":2.0,
+        "maxReal":1.6,
         "minImag":-2.0,
         "maxImag":2.0
     },
-    "width":2000,
-    "height":2000,
+    "width":512,
+    "height":512,
     "gradient": [{
             "color":"#000000",
             "position":0.0
