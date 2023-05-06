@@ -4,24 +4,33 @@ import (
 	"bytes"
 	"encoding/gob"
 	"encoding/json"
+	"fmt"
 	"log"
 	"net/http"
 	"net/url"
+	"os"
 	"runtime/debug"
 	"strconv"
 
 	"github.com/ebeeton/buddhabrot-go/shared/database"
 	"github.com/ebeeton/buddhabrot-go/shared/files"
+	"github.com/ebeeton/buddhabrot-go/shared/models"
 	"github.com/ebeeton/buddhabrot-go/shared/parameters"
 	"github.com/ebeeton/buddhabrot-go/shared/queue"
 	"github.com/go-playground/validator/v10"
 	"github.com/julienschmidt/httprouter"
+	"gorm.io/driver/mysql"
+	"gorm.io/gorm"
 )
 
 var validate *validator.Validate
+var db *gorm.DB
 
 func main() {
 	log.Println("API starting.")
+
+	// Connect to MySQL.
+	initDb()
 
 	// Register a validator for plot parameters.
 	validate = validator.New()
@@ -36,6 +45,28 @@ func main() {
 	router.PanicHandler = handlePanic
 
 	if err := http.ListenAndServe(":3000", router); err != nil {
+		log.Fatal(err)
+	}
+}
+
+func initDb() {
+	const (
+		user     = "root"
+		database = "buddhabrot"
+		passEnv  = "MYSQL_ROOT_PASSWORD"
+		server   = "mysql"
+	)
+	password := os.Getenv(passEnv)
+	dsn := fmt.Sprintf("%s:%s@tcp(%s)/%s", user, password, server, database)
+
+	var err error
+	db, err = gorm.Open(mysql.Open(dsn), &gorm.Config{})
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	err = db.AutoMigrate(&models.Plot{})
+	if err != nil {
 		log.Fatal(err)
 	}
 }
