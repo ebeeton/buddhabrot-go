@@ -4,6 +4,6 @@ package parameters
 // Type PlotRequest represents a request for a Buddhabrot image. It contains the
 // database ID for the result, and the parameters used to perform the plot.
 type PlotRequest struct {
-	Id   int64
+	Id   uint
 	Plot Plot
 }
