@@ -29,8 +29,13 @@ var db *gorm.DB
 func main() {
 	log.Println("API starting.")
 
-	// Connect to MySQL.
-	initDb()
+	// Connect to MySQL and migrate the plots table.
+	var err error
+	if db, err = Connect(); err != nil {
+		log.Fatal(err)
+	} else if err = db.AutoMigrate(&models.Plot{}); err != nil {
+		log.Fatal(err)
+	}
 
 	// Register a validator for plot parameters.
 	validate = validator.New()
@@ -49,7 +54,9 @@ func main() {
 	}
 }
 
-func initDb() {
+// Connect connects GORM to MySQL and returns a pointer to a GORM DB and any
+// error that occurred.
+func Connect() (*gorm.DB, error) {
 	const (
 		user     = "root"
 		database = "buddhabrot"
@@ -60,15 +67,12 @@ func initDb() {
 	dsn := fmt.Sprintf("%s:%s@tcp(%s)/%s", user, password, server, database)
 
 	var err error
-	db, err = gorm.Open(mysql.Open(dsn), &gorm.Config{})
+	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
 	if err != nil {
-		log.Fatal(err)
+		return nil, err
 	}
 
-	err = db.AutoMigrate(&models.Plot{})
-	if err != nil {
-		log.Fatal(err)
-	}
+	return db, nil
 }
 
 func handlePanic(w http.ResponseWriter, r *http.Request, err interface{}) {
