@@ -12,16 +12,28 @@ import (
 
 	"github.com/ebeeton/buddhabrot-go/shared/database"
 	"github.com/ebeeton/buddhabrot-go/shared/files"
+	"github.com/ebeeton/buddhabrot-go/shared/models"
 	"github.com/ebeeton/buddhabrot-go/shared/parameters"
 	"github.com/ebeeton/buddhabrot-go/shared/queue"
 	"github.com/go-playground/validator/v10"
 	"github.com/julienschmidt/httprouter"
+
+	"gorm.io/gorm"
 )
 
 var validate *validator.Validate
+var db *gorm.DB
 
 func main() {
 	log.Println("API starting.")
+
+	// Connect to MySQL and migrate the plots table.
+	var err error
+	if db, err = database.Connect(); err != nil {
+		log.Fatal(err)
+	} else if err = db.AutoMigrate(&models.Plot{}); err != nil {
+		log.Fatal(err)
+	}
 
 	// Register a validator for plot parameters.
 	validate = validator.New()
@@ -65,14 +77,16 @@ func plotRequest(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	if err != nil {
 		log.Panic(err)
 	}
-	id, err := database.Insert(string(b))
-	if err != nil {
-		log.Panic(err)
+	p := models.Plot{
+		Params: string(b),
+	}
+	if r := db.Create(&p); r.Error != nil {
+		log.Panic(r.Error)
 	}
 
 	// Enqueue the plot request.
 	req := parameters.PlotRequest{
-		Id:   id,
+		Id:   p.ID,
 		Plot: plot,
 	}
 	buf := new(bytes.Buffer)
@@ -84,7 +98,7 @@ func plotRequest(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	log.Println("Request queued.")
 
 	// Set the response location header with the ID.
-	ids := strconv.FormatInt(id, 10)
+	ids := strconv.FormatUint(uint64(p.ID), 10)
 	if l, err := url.JoinPath(r.URL.String(), ids); err != nil {
 		log.Panic(err)
 	} else {
@@ -94,25 +108,30 @@ func plotRequest(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 
 	// Write the ID to the response.
 	resp := struct {
-		Id int64
+		Id uint
 	}{
-		Id: id,
+		Id: p.ID,
 	}
 	json.NewEncoder(w).Encode(resp)
 }
 
 func getImage(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
-	i := p.ByName("id")
-	if id, err := strconv.ParseInt(i, 10, 64); err != nil {
+	var id uint
+	if i, err := strconv.ParseUint(p.ByName("id"), 10, 32); err != nil {
 		log.Panic(err)
-	} else if filename, err := database.GetFilename(id); err != nil {
-		log.Panic(err)
-	} else if filename == "" {
+	} else {
+		id = uint(i)
+	}
+
+	var plot models.Plot
+	if r := db.First(&plot, id); r.Error != nil {
+		log.Panic(r.Error)
+	} else if plot.Filename == "" {
 		// This is not an error condition. A plot has been requested but hasn't
 		// completed yet.
 		w.WriteHeader(http.StatusNotFound)
 		log.Printf("Image ID %d hasn't completed yet.", id)
-	} else if b, err := files.Read(filename); err != nil {
+	} else if b, err := files.Read(plot.Filename); err != nil {
 		log.Panic(err)
 	} else {
 		w.Header().Set("Content-type", "image/png")

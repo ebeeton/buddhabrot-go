@@ -10,12 +10,21 @@ import (
 	"github.com/ebeeton/buddhabrot-go/plotter/buddhabrot"
 	"github.com/ebeeton/buddhabrot-go/shared/database"
 	"github.com/ebeeton/buddhabrot-go/shared/files"
+	"github.com/ebeeton/buddhabrot-go/shared/models"
 	"github.com/ebeeton/buddhabrot-go/shared/parameters"
 	"github.com/ebeeton/buddhabrot-go/shared/queue"
+	"gorm.io/gorm"
 )
 
 func main() {
 	log.Println("Plotter starting.")
+
+	var db *gorm.DB
+	var err error
+	if db, err = database.Connect(); err != nil {
+		log.Fatal(err)
+	}
+
 	queue.Dequeue(func(body []byte) (err error) {
 		defer func() {
 			// https://stackoverflow.com/a/25638915/2382333
@@ -53,8 +62,13 @@ func main() {
 		}
 
 		// Update the DB record with the filename.
-		if err := database.Update(req.Id, filename); err != nil {
-			return err
+		var p models.Plot
+		if r := db.First(&p, req.Id); r.Error != nil {
+			return r.Error
+		}
+		p.Filename = filename
+		if r := db.Model(&p).Updates(p); r.Error != nil {
+			return r.Error
 		}
 
 		return nil
