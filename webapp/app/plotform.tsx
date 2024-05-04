@@ -1,7 +1,24 @@
 'use client'
-export default function PlotForm() {
+export default function PlotForm() {    
+
     function plot(formData: FormData) {
-        console.log(formData);
+        // Append a default gradient until an editor can be built.
+        var defaultGradient = [{
+            "color":"#000000",
+            "position":0.0
+        }, {
+           "color":"#ff8000",
+           "position":0.5
+        }, {
+           "color":"#ffff00",
+           "position":0.75
+        }, {
+            "color":"#FFFFFF",
+            "position":1.0
+        }];
+        // TODO:: send this to the API.
+        var plotParams = { formData, gradient: defaultGradient };
+        console.log(plotParams);
     }
 
     return (
