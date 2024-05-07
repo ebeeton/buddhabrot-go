@@ -1,24 +1,57 @@
 'use client'
-export default function PlotForm() {    
+export default function PlotForm() {
+    // Plot area of the complex plane.
+    interface Region {
+        readonly minReal: number,
+        readonly maxReal: number,
+        readonly minImag: number,
+        readonly maxImag: number
+    };
+
+    // A hex color and its position in a gradient.
+    interface Stop {
+        readonly color: string,
+        readonly position: number
+    }
+
+    // Parameters used to plot the 'brot.
+    interface PlotParams {
+        readonly sampleSize: bigint,
+        readonly maxIterations: bigint,
+        readonly region: Region,
+        readonly width: bigint,
+        readonly height: bigint,
+        readonly gradient: Stop[]
+    };
 
     function plot(formData: FormData) {
-        // Append a default gradient until an editor can be built.
-        let plotParams : any = {
+        // Copy the plot parameters from the submitted form.
+        const plotParams: PlotParams = {
+            sampleSize: BigInt(formData.get("sampleSize") as string),
+            maxIterations: BigInt(formData.get("maxIterations") as string),
+            region: {
+                minReal: +(formData.get("minReal") as string),
+                maxReal: +(formData.get("maxReal") as string),
+                minImag: +(formData.get("minImag") as string),
+                maxImag: +(formData.get("maxImag") as string)
+            },
+            width: BigInt(formData.get("width") as string),
+            height: BigInt(formData.get("height") as string),
+            // Default gradient until an editor can be built.
             gradient: [{
-                "color":"#000000",
-                "position":0.0
+                "color": "#000000",
+                "position": 0.0
             }, {
-               "color":"#ff8000",
-               "position":0.5
+                "color": "#ff8000",
+                "position": 0.5
             }, {
-               "color":"#ffff00",
-               "position":0.75
+                "color": "#ffff00",
+                "position": 0.75
             }, {
-                "color":"#FFFFFF",
-                "position":1.0
+                "color": "#FFFFFF",
+                "position": 1.0
             }]
         };
-        plotParams.width = parseInt(formData.get("width") as string);
 
         // TODO:: send this to the API.
         console.log(plotParams);
