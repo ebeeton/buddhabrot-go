@@ -29,7 +29,7 @@ export default function Home() {
         </div>
       </div>
 
-      <PlotForm apiUrl={process.env.PLOTTER_API_URL as string}>
+      <PlotForm apiUrl={process.env.PLOTTER_API as string}>
       </PlotForm>
       <div className="mb-32 grid text-center lg:mb-0 lg:w-full lg:max-w-5xl lg:grid-cols-4 lg:text-left">
         <a
