@@ -1,5 +1,5 @@
 'use client'
-export default function PlotForm() {
+export default function PlotForm({apiUrl}: {apiUrl:string}) {
     // Plot area of the complex plane.
     interface Region {
         readonly minReal: number,
@@ -25,6 +25,7 @@ export default function PlotForm() {
     };
 
     function plot(formData: FormData) {
+        console.log("API URL: " + apiUrl);
         // Copy the plot parameters from the submitted form.
         const plotParams: PlotParams = {
             sampleSize: BigInt(formData.get("sampleSize") as string),
