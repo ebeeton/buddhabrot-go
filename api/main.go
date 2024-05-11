@@ -17,6 +17,7 @@ import (
 	"github.com/ebeeton/buddhabrot-go/shared/queue"
 	"github.com/go-playground/validator/v10"
 	"github.com/julienschmidt/httprouter"
+	"github.com/rs/cors"
 
 	"gorm.io/gorm"
 )
@@ -47,7 +48,9 @@ func main() {
 	router.GET("/api/healthcheck", healthcheck)
 	router.PanicHandler = handlePanic
 
-	if err := http.ListenAndServe(":3000", router); err != nil {
+	handler := cors.Default().Handler(router)
+
+	if err := http.ListenAndServe(":3000", handler); err != nil {
 		log.Fatal(err)
 	}
 }
