@@ -1,4 +1,7 @@
 'use client'
+
+import { redirect } from "next/navigation";
+
 export default function PlotForm({apiUrl}: {apiUrl:string}) {
     // Plot area of the complex plane.
     interface Region {
@@ -23,6 +26,11 @@ export default function PlotForm({apiUrl}: {apiUrl:string}) {
         readonly height: number,
         readonly gradient: Stop[]
     };
+
+    // Data returned by the plot request.
+    interface PlotResponse {
+        readonly id: number
+    }
 
     async function plot(formData: FormData) {
         const PlotRoute = "/api/Plots";
@@ -55,15 +63,19 @@ export default function PlotForm({apiUrl}: {apiUrl:string}) {
             }]
         };
 
-        const res = await fetch(new URL(PlotRoute, apiUrl), {
+        let plotResponse = await fetch(new URL(PlotRoute, apiUrl), {
             method:"POST",
             headers:{
                 "Content-type": "application/json"
             },
             body: JSON.stringify(plotParams)
-        });
+        })
+        .then(response => response.json())
+        .then(body => body as PlotResponse)
+        .catch(console.error);
 
-        console.log(res.json());
+        // TODO:: Redirect to... something?
+        console.log(plotResponse);
     }
 
     return (
