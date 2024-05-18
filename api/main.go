@@ -9,6 +9,7 @@ import (
 	"net/url"
 	"runtime/debug"
 	"strconv"
+	"time"
 
 	"github.com/ebeeton/buddhabrot-go/shared/database"
 	"github.com/ebeeton/buddhabrot-go/shared/files"
@@ -46,6 +47,7 @@ func main() {
 	router.POST("/api/plots", plotRequest)
 	router.GET("/api/plots/:id", getImage)
 	router.GET("/api/healthcheck", healthcheck)
+	router.GET("/api/plots", getPlots)
 	router.PanicHandler = handlePanic
 
 	handler := cors.Default().Handler(router)
@@ -159,6 +161,21 @@ func ValidateStops(fl validator.FieldLevel) bool {
 	}
 
 	return true
+}
+
+type getPlot struct {
+	ID        uint
+	CreatedAt time.Time
+	UpdatedAt time.Time
+	Filename  string
+}
+
+func getPlots(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
+	var plots []getPlot
+	if result := db.Model(&models.Plot{}).Order("updated_at desc").Find(&plots); result.Error != nil {
+		log.Panic(result.Error)
+	}
+	json.NewEncoder(w).Encode(plots)
 }
 
 func healthcheck(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
