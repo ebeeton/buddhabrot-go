@@ -14,8 +14,23 @@ export default function PlotSummaryList() {
     });
 
     return (
-        <div className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
-            {plots?.map(p => (<PlotSummary plot={p} key={p.ID} />))}
+        <div className="bg-white shadow-md rounded ml-8 px-8 pt-6">
+            <table>
+                <tbody>
+                    <tr>
+                        <th>
+                            Image
+                        </th>
+                        <th>
+                            Created
+                        </th>
+                        <th>
+                            Updated
+                        </th>
+                    </tr>
+                    {plots?.map(p => (<PlotSummary plot={p} key={p.ID} />))}
+                </tbody>
+            </table>
         </div>
     );
 }
