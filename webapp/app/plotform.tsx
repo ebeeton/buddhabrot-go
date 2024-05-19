@@ -1,8 +1,8 @@
 'use client'
 
-import { redirect } from "next/navigation";
+import { APIURL, PLOTROUTE } from "./apiRoutes"
 
-export default function PlotForm({ apiUrl }: { apiUrl: string }) {
+export default function PlotForm() {
     // Plot area of the complex plane.
     interface Region {
         readonly minReal: number,
@@ -33,8 +33,6 @@ export default function PlotForm({ apiUrl }: { apiUrl: string }) {
     }
 
     async function plot(formData: FormData) {
-        const PlotRoute = "/api/Plots";
-        console.log(`API URL: ${new URL(PlotRoute, apiUrl)}`);
         // Copy the plot parameters from the submitted form.
         const plotParams: PlotParams = {
             sampleSize: +(formData.get("sampleSize") as string),
@@ -63,7 +61,7 @@ export default function PlotForm({ apiUrl }: { apiUrl: string }) {
             }]
         };
 
-        let plotResponse = await fetch(new URL(PlotRoute, apiUrl), {
+        let plotResponse = await fetch(new URL(PLOTROUTE, APIURL), {
             method: "POST",
             headers: {
                 "Content-type": "application/json"
