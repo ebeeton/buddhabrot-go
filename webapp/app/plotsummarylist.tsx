@@ -9,9 +9,12 @@ export default function PlotSummaryList() {
     useEffect(() => {
         fetch(new URL(PLOTROUTE, APIURL))
             .then(response => response.json())
-            .then(body => setPlots(body))
+            .then(body => {
+                setPlots(body);
+                console.log("Plot summary list updated.");
+            })
             .catch(console.error);
-    });
+    }, []);
 
     return (
         <div className="bg-white shadow-md rounded ml-8 px-8 pt-6">
