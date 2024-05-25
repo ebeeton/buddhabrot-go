@@ -6,14 +6,26 @@ import { APIURL, PLOTROUTE } from "./apiRoutes";
 
 export default function PlotSummaryList() {
     let [plots, setPlots] = useState<Plot[]>();
+    const refreshMS = 5000;
+    // Refresh on an interval from https://stackoverflow.com/a/64144607/2382333
     useEffect(() => {
-        fetch(new URL(PLOTROUTE, APIURL))
+        const fetchData = async() => {
+            fetch(new URL(PLOTROUTE, APIURL))
             .then(response => response.json())
             .then(body => {
                 setPlots(body);
-                console.log("Plot summary list updated.");
+                console.debug("Plot summary list updated.");
             })
             .catch(console.error);
+        };
+
+        fetchData();
+
+        const id = setInterval(() => {
+            fetchData();
+        }, refreshMS);
+
+        return () => clearInterval(id);
     }, []);
 
     return (
