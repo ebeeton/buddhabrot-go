@@ -6,7 +6,7 @@ import { APIURL, PLOTROUTE } from "./apiRoutes";
 
 export default function PlotSummaryList() {
     let [plots, setPlots] = useState<Plot[]>();
-    const refreshMS = 5000;
+    const refreshMS = 3000;
     // Refresh on an interval from https://stackoverflow.com/a/64144607/2382333
     useEffect(() => {
         const fetchData = async() => {
@@ -30,9 +30,12 @@ export default function PlotSummaryList() {
 
     return (
         <div className="bg-white shadow-md rounded ml-8 px-8 pt-6">
-            <table>
+            <table className="w-full">
+                <caption>
+                    Plot History
+                </caption>
                 <tbody>
-                    <tr>
+                    <tr className="text-left">
                         <th>
                             Image
                         </th>
