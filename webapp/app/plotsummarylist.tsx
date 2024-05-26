@@ -29,7 +29,7 @@ export default function PlotSummaryList() {
     }, []);
 
     return (
-        <div className="bg-white shadow-md rounded ml-8 px-8 pt-6">
+        <div className="bg-white shadow-md rounded ml-8 px-8 pt-6 h-5/6 overflow-y-scroll">
             <table className="w-full">
                 <caption>
                     Plot History

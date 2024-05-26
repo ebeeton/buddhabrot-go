@@ -77,7 +77,7 @@ export default function PlotForm() {
     }
 
     return (
-        <form action={plot} className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
+        <form action={plot} className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4 h-5/6">
             <div className="mb-4">
                 <label htmlFor="width" className="block uppercase tracking-wide text-gray-700 text-xs font-bold mr-2">
                     Width
