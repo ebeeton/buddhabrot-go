@@ -80,7 +80,7 @@ with the JSON file above, so to test the plotting you can run:
 ./request.sh
 ```
 
-You will get a response similiar to this; note the `Id` property.
+You will get a response similar to this; note the `Id` property.
 
 ```json
 {
