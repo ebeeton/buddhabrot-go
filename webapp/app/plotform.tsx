@@ -82,28 +82,28 @@ export default function PlotForm() {
                 <label htmlFor="width" className="block uppercase tracking-wide text-gray-700 text-xs font-bold mr-2">
                     Width
                 </label>
-                <input name="width" defaultValue={512}
+                <input name="width" defaultValue={512} type="number" min="1"
                     className="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" />
             </div>
             <div className="mb-4">
                 <label htmlFor="height" className="block uppercase tracking-wide text-gray-700 text-xs font-bold mr-2">
                     Height
                 </label>
-                <input name="height" defaultValue={512}
+                <input name="height" defaultValue={512} type="number" min="1"
                     className="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" />
             </div>
             <div className="mb-4">
                 <label htmlFor="sampleSize" className="block uppercase tracking-wide text-gray-700 text-xs font-bold mr-2">
                     Sample size
                 </label>
-                <input name="sampleSize" defaultValue={100000000}
+                <input name="sampleSize" defaultValue={100000000} type="number" min="1"
                     className="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" />
             </div>
             <div className="mb-4">
                 <label htmlFor="maxIterations" className="block uppercase tracking-wide text-gray-700 text-xs font-bold mr-2">
                     Maximum iterations
                 </label>
-                <input name="maxIterations" defaultValue={5000}
+                <input name="maxIterations" defaultValue={5000} type="number" min="1"
                     className="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" />
             </div>
             <div className="block uppercase tracking-wide text-gray-700 text-xs font-bold mr-2 mb-4">Plotting Region
@@ -113,28 +113,28 @@ export default function PlotForm() {
                 <label htmlFor="minReal" className="block uppercase tracking-wide text-gray-700 text-xs font-bold mr-2">
                     Minimum real
                 </label>
-                <input name="minReal" defaultValue={-2.0}
+                <input name="minReal" defaultValue={-2.0} type="number" min="-2.0" max="1.6" step="0.0001"
                     className="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" />
             </div>
             <div className="mb-4">
                 <label htmlFor="maxReal" className="block uppercase tracking-wide text-gray-700 text-xs font-bold mr-2">
                     Maximum real
                 </label>
-                <input name="maxReal" defaultValue={1.6}
+                <input name="maxReal" defaultValue={1.6} type="number" min="-2.0" max="1.6" step="0.0001"
                     className="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" />
             </div>
             <div className="mb-4">
                 <label htmlFor="minImag" className="block uppercase tracking-wide text-gray-700 text-xs font-bold mr-2">
                     Minimum imaginary
                 </label>
-                <input name="minImag" defaultValue={-2}
+                <input name="minImag" defaultValue={-2} type="number" min="-2.0" max="2.0" step="0.0001"
                     className="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" />
             </div>
             <div className="mb-4">
                 <label htmlFor="maxImag" className="block uppercase tracking-wide text-gray-700 text-xs font-bold mr-2">
                     Maximum imaginary
                 </label>
-                <input name="maxImag" defaultValue={2}
+                <input name="maxImag" defaultValue={2} type="number" min="-2.0" max="2.0" step="0.0001"
                     className="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" />
             </div>
             <div>
