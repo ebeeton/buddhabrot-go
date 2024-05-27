@@ -2,12 +2,11 @@
 
 [![Go](https://github.com/ebeeton/buddhabrot-go/actions/workflows/go.yml/badge.svg)](https://github.com/ebeeton/buddhabrot-go/actions/workflows/go.yml)
 
-A Buddhabrot plotter written as a Go learning exercise.
+A Buddhabrot plotter written as a Go, React, and TypeScript learning exercise.
 
 ![Buddhabrot image](/samples/sample.png)
 
-This plot took about a minute on an eight-core machine using the parameters
-below.
+This plot took about a minute on an eight-core machine.
 
 ## Usage
 
@@ -18,16 +17,20 @@ repository called `.env` and set the contents to `DB_ROOT_PASSWORD=yourchoice`.
 
 ### Run It
 
-In the same directory run `docker compose up --build`, which starts the API on
-`http://localhost:3000`. After all the containers are running you can request a
-plot.
+In the same directory run `docker compose up`, which starts the web application
+on [http://localhost:8000](http://localhost:8000).
 
 ### Request a Plot
 
-The parameters used to plot the image are posted in JSON by clients 
-to '/api/plots', and the API records them in the database. The row ID and 
-parameters are returned with HTTP status 201. The ID will be used to obtain a
-PNG image of the plot after it is complete. Because the plotting is CPU
+The form on the left of the app defines the parameters that are used to plot an
+image. The table on the right shows the plot history and links to images of
+completed plots. Click the plot button to enqueue a plot.
+
+## Under the Hood
+
+The parameters used to plot the image are posted to an API running on port 3000,
+and the API records them in the database. The row ID returned will be used to
+obtain a PNG image of the plot after it is complete. Because the plotting is CPU
 intensive, RabbitMQ is used to enqueue the plot request for a separate plotter
 process so the API request doesn't block.
 
@@ -89,7 +92,7 @@ You will get a response similiar to this; note the `Id` property.
 
 ### Getting Images
 
-Given the `Id` from the previous step, you can do a get to `/api/plots/25'`. If
+Given the `Id` from the previous step, you can do a get to `/api/plots/25`. If
 the plotter process has completed the plot, this will return a PNG image.
 Otherwise 404 is returned until the plot is complete. To do this with curl:
 
