@@ -30,6 +30,14 @@ services:
       - MYSQL_ROOT_PASSWORD=${DB_ROOT_PASSWORD}
     volumes:
       - plots:/plots
+      
+  webapp:
+    build:
+      context: webapp
+    ports:
+      - "8000:8000"
+    depends_on:
+      - api
 
   rabbitmq:
     image: rabbitmq:3.11-management
