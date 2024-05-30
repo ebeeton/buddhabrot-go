@@ -77,7 +77,7 @@ export default function PlotForm() {
     }
 
     return (
-        <form action={plot} className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4 h-5/6">
+        <form action={plot} className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
             <div className="mb-4">
                 <label htmlFor="width" className="block uppercase tracking-wide text-gray-700 text-xs font-bold mr-2">
                     Width
@@ -138,7 +138,8 @@ export default function PlotForm() {
                     className="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" />
             </div>
             <div>
-                <button type="submit" className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">Plot</button>
+                <button type="submit" className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">Plot</button>                
+                <button type="button" className="ml-4 outline hover:text-white hover:bg-blue-700 outline-blue-500 text-blue-500 font-bold py-2 px-4 rounded outline-1">Random Region</button>
             </div>
         </form>
     );
