@@ -14,7 +14,6 @@ export default function PlotSummaryList() {
             .then(response => response.json())
             .then(body => {
                 setPlots(body);
-                console.debug("Plot summary list updated.");
             })
             .catch(console.error);
         };
