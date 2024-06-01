@@ -14,7 +14,6 @@ export default function PlotSummaryList() {
             .then(response => response.json())
             .then(body => {
                 setPlots(body);
-                console.debug("Plot summary list updated.");
             })
             .catch(console.error);
         };
@@ -29,7 +28,7 @@ export default function PlotSummaryList() {
     }, []);
 
     return (
-        <div className="bg-white shadow-md rounded ml-8 px-8 pt-6 h-5/6 overflow-y-scroll">
+        <div className="bg-white shadow-md rounded ml-8 px-8 pt-6 max-h-96 overflow-y-scroll">
             <table className="w-full">
                 <caption>
                     Plot History
