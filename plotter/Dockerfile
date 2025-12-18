@@ -1,4 +1,4 @@
-FROM golang:1.20.3-alpine3.17 AS build
+FROM golang:1.25.5-alpine3.23 AS build
 
 WORKDIR /usr/src/app
 
@@ -8,7 +8,7 @@ RUN go mod download && go mod verify
 COPY . .
 RUN go build -v -o plotter ./plotter/...
 
-FROM alpine:3.17
+FROM alpine:3.23
 
 COPY --from=build /usr/src/app/plotter /usr/local/bin/
 
